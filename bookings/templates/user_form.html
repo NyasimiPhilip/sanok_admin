@@ -1,0 +1,218 @@
+{% extends 'base.html' %}
+
+{% block title %}{% if view_user %}Edit User{% else %}Create User{% endif %} - Sanok Fumigation{% endblock %}
+
+{% block content %}
+<div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 2rem;">
+    <h1 style="color: white; text-shadow: 2px 2px 4px rgba(0,0,0,0.2);">
+        {% if view_user %}✏️ Edit User: {{ view_user.username }}{% else %}➕ Create New User{% endif %}
+    </h1>
+    <a href="{% if view_user %}{% url 'user_detail' view_user.pk %}{% else %}{% url 'user_list' %}{% endif %}" class="btn btn-secondary">
+        ← Cancel
+    </a>
+</div>
+
+<div class="card" style="max-width: 700px; margin: 0 auto;">
+    <form method="post">
+        {% csrf_token %}
+        
+        <!-- Role Selection -->
+        <div class="form-group">
+            <label for="role">👤 User Role *</label>
+            <select id="role" name="role" required {% if view_user %}disabled{% endif %}>
+                <option value="">Select Role</option>
+                {% if user.is_super_admin %}
+                <option value="super_admin" {% if view_user and view_user.role == 'super_admin' %}selected{% endif %}>Super Admin</option>
+                <option value="admin" {% if view_user and view_user.role == 'admin' %}selected{% endif %}>Admin</option>
+                {% endif %}
+                <option value="technician" {% if view_user and view_user.role == 'technician' %}selected{% endif %}>Technician</option>
+            </select>
+            {% if view_user %}
+            <input type="hidden" name="role" value="{{ view_user.role }}">
+            <small style="color: #6c757d; display: block; margin-top: 0.25rem;">
+                Role cannot be changed after creation
+            </small>
+            {% endif %}
+        </div>
+        
+        <!-- Username -->
+        <div class="form-group">
+            <label for="username">🔑 Username *</label>
+            <input type="text" id="username" name="username" 
+                   value="{% if view_user %}{{ view_user.username }}{% endif %}" 
+                   {% if view_user %}readonly{% endif %}
+                   required>
+            {% if view_user %}
+            <small style="color: #6c757d; display: block; margin-top: 0.25rem;">
+                Username cannot be changed
+            </small>
+            {% endif %}
+        </div>
+        
+        <!-- Password (only for new users) -->
+        {% if not view_user %}
+        <div class="form-group">
+            <label for="password">🔒 Password *</label>
+            <input type="password" id="password" name="password" required>
+            <small style="color: #6c757d; display: block; margin-top: 0.25rem;">
+                Minimum 8 characters
+            </small>
+        </div>
+        
+        <div class="form-group">
+            <label for="password_confirm">🔒 Confirm Password *</label>
+            <input type="password" id="password_confirm" name="password_confirm" required>
+        </div>
+        {% endif %}
+        
+        <!-- First Name -->
+        <div class="form-group">
+            <label for="first_name">👤 First Name *</label>
+            <input type="text" id="first_name" name="first_name" 
+                   value="{% if view_user %}{{ view_user.first_name }}{% endif %}" required>
+        </div>
+        
+        <!-- Last Name -->
+        <div class="form-group">
+            <label for="last_name">👤 Last Name *</label>
+            <input type="text" id="last_name" name="last_name" 
+                   value="{% if view_user %}{{ view_user.last_name }}{% endif %}" required>
+        </div>
+        
+        <!-- Email -->
+        <div class="form-group">
+            <label for="email">📧 Email *</label>
+            <input type="email" id="email" name="email" 
+                   value="{% if view_user %}{{ view_user.email }}{% endif %}" required>
+        </div>
+        
+        <!-- Phone Number -->
+        <div class="form-group">
+            <label for="phone_number">📞 Phone Number</label>
+            <input type="tel" id="phone_number" name="phone_number" 
+                   placeholder="+254-700-123456"
+                   value="{% if view_user %}{{ view_user.phone_number }}{% endif %}">
+        </div>
+        
+        <!-- Country (for technicians) -->
+        <div class="form-group" id="country-group">
+            <label for="country">🌍 Country *</label>
+            <select id="country" name="country">
+                <option value="">Select Country</option>
+                <option value="kenya" {% if view_user and view_user.country == 'kenya' %}selected{% endif %}>🇰🇪 Kenya</option>
+                <option value="uganda" {% if view_user and view_user.country == 'uganda' %}selected{% endif %}>🇺🇬 Uganda</option>
+                <option value="zambia" {% if view_user and view_user.country == 'zambia' %}selected{% endif %}>🇿🇲 Zambia</option>
+                <option value="south_africa" {% if view_user and view_user.country == 'south_africa' %}selected{% endif %}>🇿🇦 South Africa</option>
+            </select>
+            <small style="color: #6c757d; display: block; margin-top: 0.25rem;">
+                Required for technicians
+            </small>
+        </div>
+        
+        <!-- Active Status -->
+        {% if view_user %}
+        <div class="form-group">
+            <label style="display: flex; align-items: center; gap: 0.5rem; cursor: pointer;">
+                <input type="checkbox" id="is_active" name="is_active" 
+                       {% if view_user.is_active %}checked{% endif %}
+                       style="width: auto; transform: scale(1.2);">
+                <span>✅ Active User</span>
+            </label>
+        </div>
+        {% endif %}
+        
+        <div style="background: #d1ecf1; padding: 1rem; border-radius: 8px; margin: 1.5rem 0;">
+            <h4 style="color: #0c5460; margin-bottom: 0.75rem;">🔐 Permissions</h4>
+            <div id="permissions-info" style="color: #0c5460; font-size: 0.9rem;">
+                <p>Select a role to see permissions</p>
+            </div>
+        </div>
+        
+        <div style="display: flex; gap: 1rem; justify-content: flex-end; margin-top: 2rem; padding-top: 2rem; border-top: 1px solid #dee2e6;">
+            <a href="{% if view_user %}{% url 'user_detail' view_user.pk %}{% else %}{% url 'user_list' %}{% endif %}" class="btn btn-secondary">
+                Cancel
+            </a>
+            <button type="submit" class="btn btn-success">
+                {% if view_user %}💾 Update User{% else %}➕ Create User{% endif %}
+            </button>
+        </div>
+    </form>
+</div>
+
+<script>
+    // Show/hide country field and update permissions based on role
+    const roleSelect = document.getElementById('role');
+    const countryGroup = document.getElementById('country-group');
+    const countrySelect = document.getElementById('country');
+    const permissionsInfo = document.getElementById('permissions-info');
+    
+    const permissions = {
+        'super_admin': `
+            <ul style="margin: 0; padding-left: 1.5rem;">
+                <li>✅ Full system access (24/7)</li>
+                <li>✅ Create and delete admins</li>
+                <li>✅ Create and delete technicians</li>
+                <li>✅ Manage all orders across all countries</li>
+                <li>✅ View all statistics and reports</li>
+            </ul>
+        `,
+        'admin': `
+            <ul style="margin: 0; padding-left: 1.5rem;">
+                <li>✅ System access 24/7</li>
+                <li>✅ Create and delete technicians</li>
+                <li>✅ Create orders in any country</li>
+                <li>✅ Assign technicians to orders</li>
+                <li>✅ View all orders and statistics</li>
+            </ul>
+        `,
+        'technician': `
+            <ul style="margin: 0; padding-left: 1.5rem;">
+                <li>✅ Access during morning hours (5:00 AM - 12:00 PM)</li>
+                <li>✅ View assigned orders only</li>
+                <li>✅ Update order status</li>
+                <li>❌ Cannot create orders</li>
+                <li>❌ Cannot manage users</li>
+            </ul>
+        `
+    };
+    
+    function updateRoleSettings() {
+        const selectedRole = roleSelect.value;
+        
+        // Update permissions display
+        if (selectedRole && permissions[selectedRole]) {
+            permissionsInfo.innerHTML = permissions[selectedRole];
+        } else {
+            permissionsInfo.innerHTML = '<p>Select a role to see permissions</p>';
+        }
+        
+        // Show/hide country field for technicians
+        if (selectedRole === 'technician') {
+            countryGroup.style.display = 'block';
+            countrySelect.required = true;
+        } else {
+            countryGroup.style.display = 'none';
+            countrySelect.required = false;
+        }
+    }
+    
+    roleSelect.addEventListener('change', updateRoleSettings);
+    
+    // Initialize on page load
+    updateRoleSettings();
+    
+    // Password confirmation validation (only for new users)
+    const passwordInput = document.getElementById('password');
+    const passwordConfirm = document.getElementById('password_confirm');
+    
+    if (passwordInput && passwordConfirm) {
+        passwordConfirm.addEventListener('input', function() {
+            if (passwordInput.value !== passwordConfirm.value) {
+                passwordConfirm.setCustomValidity('Passwords do not match');
+            } else {
+                passwordConfirm.setCustomValidity('');
+            }
+        });
+    }
+</script>
+{% endblock %}

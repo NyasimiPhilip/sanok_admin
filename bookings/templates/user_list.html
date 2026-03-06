@@ -1,0 +1,185 @@
+{% extends 'base.html' %}
+
+{% block title %}Users - Sanok Fumigation{% endblock %}
+
+{% block content %}
+<div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 2rem;">
+    <h1 style="color: white; text-shadow: 2px 2px 4px rgba(0,0,0,0.2);">👥 User Management</h1>
+    {% if user.is_super_admin or user.is_admin %}
+    <a href="{% url 'user_create' %}" class="btn btn-success">+ Add User</a>
+    {% endif %}
+</div>
+
+<!-- Role Stats -->
+<div class="stats-grid" style="margin-bottom: 2rem;">
+    {% if user.is_super_admin %}
+    <div class="stat-card" style="background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); color: white;">
+        <h3 style="color: rgba(255,255,255,0.9);">Super Admins</h3>
+        <div class="value">{{ user_stats.super_admins }}</div>
+    </div>
+    {% endif %}
+    
+    <div class="stat-card" style="background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%); color: white;">
+        <h3 style="color: rgba(255,255,255,0.9);">Admins</h3>
+        <div class="value">{{ user_stats.admins }}</div>
+    </div>
+    
+    <div class="stat-card" style="background: linear-gradient(135deg, #4facfe 0%, #00f2fe 100%); color: white;">
+        <h3 style="color: rgba(255,255,255,0.9);">Technicians</h3>
+        <div class="value">{{ user_stats.technicians }}</div>
+    </div>
+    
+    <div class="stat-card" style="background: linear-gradient(135deg, #43e97b 0%, #38f9d7 100%); color: white;">
+        <h3 style="color: rgba(255,255,255,0.9);">Active Users</h3>
+        <div class="value">{{ user_stats.active_users }}</div>
+    </div>
+</div>
+
+<!-- Filters -->
+<div class="card" style="margin-bottom: 2rem;">
+    <form method="get" style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 1rem; align-items: end;">
+        <div class="form-group" style="margin-bottom: 0;">
+            <label for="role">Role</label>
+            <select name="role" id="role" onchange="this.form.submit()">
+                <option value="">All Roles</option>
+                {% if user.is_super_admin %}
+                <option value="super_admin" {% if request.GET.role == 'super_admin' %}selected{% endif %}>Super Admin</option>
+                {% endif %}
+                <option value="admin" {% if request.GET.role == 'admin' %}selected{% endif %}>Admin</option>
+                <option value="technician" {% if request.GET.role == 'technician' %}selected{% endif %}>Technician</option>
+            </select>
+        </div>
+        
+        <div class="form-group" style="margin-bottom: 0;">
+            <label for="country">Country</label>
+            <select name="country" id="country" onchange="this.form.submit()">
+                <option value="">All Countries</option>
+                <option value="kenya" {% if request.GET.country == 'kenya' %}selected{% endif %}>🇰🇪 Kenya</option>
+                <option value="uganda" {% if request.GET.country == 'uganda' %}selected{% endif %}>🇺🇬 Uganda</option>
+                <option value="zambia" {% if request.GET.country == 'zambia' %}selected{% endif %}>🇿🇲 Zambia</option>
+                <option value="south_africa" {% if request.GET.country == 'south_africa' %}selected{% endif %}>🇿🇦 South Africa</option>
+            </select>
+        </div>
+        
+        <div class="form-group" style="margin-bottom: 0;">
+            <label for="is_active">Status</label>
+            <select name="is_active" id="is_active" onchange="this.form.submit()">
+                <option value="">All</option>
+                <option value="true" {% if request.GET.is_active == 'true' %}selected{% endif %}>Active</option>
+                <option value="false" {% if request.GET.is_active == 'false' %}selected{% endif %}>Inactive</option>
+            </select>
+        </div>
+        
+        <div class="form-group" style="margin-bottom: 0;">
+            <label for="search">Search</label>
+            <input type="text" name="search" id="search" placeholder="Name, username, email" value="{{ request.GET.search }}">
+        </div>
+        
+        <div style="display: flex; gap: 0.5rem;">
+            <button type="submit" class="btn btn-primary">Filter</button>
+            <a href="{% url 'user_list' %}" class="btn btn-secondary">Clear</a>
+        </div>
+    </form>
+</div>
+
+<!-- Users Table -->
+<div class="card">
+    {% if users %}
+    <table class="table">
+        <thead>
+            <tr>
+                <th>Name</th>
+                <th>Username</th>
+                <th>Email</th>
+                <th>Role</th>
+                <th>Country</th>
+                <th>Phone</th>
+                <th>Status</th>
+                <th>Actions</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for usr in users %}
+            <tr>
+                <td><strong>{{ usr.get_full_name|default:usr.username }}</strong></td>
+                <td>{{ usr.username }}</td>
+                <td>{{ usr.email }}</td>
+                <td>
+                    <span class="role-badge role-{{ usr.role }}">
+                        {{ usr.get_role_display }}
+                    </span>
+                </td>
+                <td>
+                    {% if usr.country %}
+                        {% if usr.country == 'kenya' %}🇰🇪 Kenya
+                        {% elif usr.country == 'uganda' %}🇺🇬 Uganda
+                        {% elif usr.country == 'zambia' %}🇿🇲 Zambia
+                        {% elif usr.country == 'south_africa' %}🇿🇦 South Africa
+                        {% endif %}
+                    {% else %}
+                        -
+                    {% endif %}
+                </td>
+                <td>{{ usr.phone_number|default:"-" }}</td>
+                <td>
+                    {% if usr.is_active %}
+                    <span class="badge badge-completed">Active</span>
+                    {% else %}
+                    <span class="badge badge-cancelled">Inactive</span>
+                    {% endif %}
+                </td>
+                <td>
+                    <div style="display: flex; gap: 0.5rem;">
+                        <a href="{% url 'user_detail' usr.pk %}" class="btn btn-primary" style="padding: 0.5rem 1rem; font-size: 0.85rem;">View</a>
+                        {% if user.is_super_admin or (user.is_admin and usr.role == 'technician') %}
+                        <a href="{% url 'user_edit' usr.pk %}" class="btn" style="background: #ffc107; color: #000; padding: 0.5rem 1rem; font-size: 0.85rem;">Edit</a>
+                        {% endif %}
+                    </div>
+                </td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+    
+    <!-- Pagination -->
+    {% if is_paginated %}
+    <div style="display: flex; justify-content: center; align-items: center; gap: 1rem; margin-top: 2rem; padding-top: 2rem; border-top: 1px solid #dee2e6;">
+        {% if page_obj.has_previous %}
+        <a href="?page=1" class="btn btn-secondary">First</a>
+        <a href="?page={{ page_obj.previous_page_number }}" class="btn btn-secondary">Previous</a>
+        {% endif %}
+        
+        <span style="padding: 0.75rem 1.5rem; background: #f8f9fa; border-radius: 8px; font-weight: 600;">
+            Page {{ page_obj.number }} of {{ page_obj.paginator.num_pages }}
+        </span>
+        
+        {% if page_obj.has_next %}
+        <a href="?page={{ page_obj.next_page_number }}" class="btn btn-secondary">Next</a>
+        <a href="?page={{ page_obj.paginator.num_pages }}" class="btn btn-secondary">Last</a>
+        {% endif %}
+    </div>
+    {% endif %}
+    {% else %}
+    <div style="text-align: center; padding: 3rem;">
+        <div style="font-size: 4rem; margin-bottom: 1rem;">👥</div>
+        <h3 style="margin-bottom: 0.5rem;">No Users Found</h3>
+        <p style="color: #6c757d;">{% if request.GET %}Try adjusting your filters{% else %}No users in the system{% endif %}</p>
+        {% if user.is_super_admin or user.is_admin %}
+        <a href="{% url 'user_create' %}" class="btn btn-success" style="margin-top: 1.5rem;">Add First User</a>
+        {% endif %}
+    </div>
+    {% endif %}
+</div>
+
+<!-- Permissions Info -->
+<div class="card" style="background: #d1ecf1; border: 2px solid #bee5eb; margin-top: 2rem;">
+    <h3 style="color: #0c5460; margin-bottom: 1rem;">🔐 User Management Permissions</h3>
+    <ul style="color: #0c5460; line-height: 2;">
+        <li><strong>Super Admin:</strong> Can create and delete admins and technicians</li>
+        {% if user.is_super_admin or user.is_admin %}
+        <li><strong>Admin:</strong> Can create and delete technicians only</li>
+        {% endif %}
+        <li><strong>Technician:</strong> Cannot manage users, can only view their own profile</li>
+    </ul>
+</div>
+{% endblock %}

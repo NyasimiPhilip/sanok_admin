@@ -1,0 +1,191 @@
+{% extends 'base.html' %}
+
+{% block title %}{% if booking %}Edit Order{% else %}Create Order{% endif %} - Sanok Fumigation{% endblock %}
+
+{% block content %}
+<div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 2rem;">
+    <h1 style="color: white; text-shadow: 2px 2px 4px rgba(0,0,0,0.2);">
+        {% if booking %}✏️ Edit Order {{ booking.order_number }}{% else %}➕ Create New Order{% endif %}
+    </h1>
+    <a href="{% if booking %}{% url 'booking_detail' booking.pk %}{% else %}{% url 'booking_list' %}{% endif %}" class="btn btn-secondary">
+        ← Cancel
+    </a>
+</div>
+
+<div class="card" style="max-width: 900px; margin: 0 auto;">
+    <form method="post">
+        {% csrf_token %}
+        
+        <!-- Date & Time -->
+        <div class="form-group">
+            <label for="order_time">📅 Order Date & Time *</label>
+            <input type="datetime-local" id="order_time" name="order_time" 
+                   value="{% if booking %}{{ booking.order_time|date:'Y-m-d\TH:i' }}{% endif %}" required>
+        </div>
+        
+        <!-- Country -->
+        <div class="form-group">
+            <label for="country">🌍 Country *</label>
+            <select id="country" name="country" required>
+                <option value="">Select Country</option>
+                <option value="kenya" {% if booking and booking.country == 'kenya' %}selected{% endif %}>🇰🇪 Kenya</option>
+                <option value="uganda" {% if booking and booking.country == 'uganda' %}selected{% endif %}>🇺🇬 Uganda</option>
+                <option value="zambia" {% if booking and booking.country == 'zambia' %}selected{% endif %}>🇿🇲 Zambia</option>
+                <option value="south_africa" {% if booking and booking.country == 'south_africa' %}selected{% endif %}>🇿🇦 South Africa</option>
+            </select>
+        </div>
+        
+        <!-- Location Pin -->
+        <div class="form-group">
+            <label for="location_pin">📍 Location Pin (Google Maps Link) *</label>
+            <input type="url" id="location_pin" name="location_pin" 
+                   placeholder="https://maps.google.com/?q=..."
+                   value="{% if booking %}{{ booking.location_pin }}{% endif %}" required>
+            <small style="color: #6c757d; display: block; margin-top: 0.25rem;">
+                Paste the Google Maps link for the location
+            </small>
+        </div>
+        
+        <!-- Location Address -->
+        <div class="form-group">
+            <label for="location_address">🏠 Full Address *</label>
+            <textarea id="location_address" name="location_address" rows="3" required 
+                      placeholder="Enter complete address">{% if booking %}{{ booking.location_address }}{% endif %}</textarea>
+        </div>
+        
+        <!-- Client Phone -->
+        <div class="form-group">
+            <label for="client_phone">📞 Client Phone Number *</label>
+            <input type="tel" id="client_phone" name="client_phone" 
+                   placeholder="+254-700-123456"
+                   value="{% if booking %}{{ booking.client_phone }}{% endif %}" required>
+        </div>
+        
+        <!-- Pest Type -->
+        <div class="form-group">
+            <label for="pest_type">🐛 Pest Type *</label>
+            <select id="pest_type" name="pest_type" required>
+                <option value="">Select Pest Type</option>
+                <option value="rodents" {% if booking and booking.pest_type == 'rodents' %}selected{% endif %}>🐀 Rodents</option>
+                <option value="cockroaches" {% if booking and booking.pest_type == 'cockroaches' %}selected{% endif %}>🪳 Cockroaches</option>
+                <option value="termites" {% if booking and booking.pest_type == 'termites' %}selected{% endif %}>🐜 Termites</option>
+                <option value="bed_bugs" {% if booking and booking.pest_type == 'bed_bugs' %}selected{% endif %}>🛏️ Bed Bugs</option>
+                <option value="ants" {% if booking and booking.pest_type == 'ants' %}selected{% endif %}>🐜 Ants</option>
+                <option value="mosquitoes" {% if booking and booking.pest_type == 'mosquitoes' %}selected{% endif %}>🦟 Mosquitoes</option>
+                <option value="flies" {% if booking and booking.pest_type == 'flies' %}selected{% endif %}>🪰 Flies</option>
+                <option value="other" {% if booking and booking.pest_type == 'other' %}selected{% endif %}>Other</option>
+            </select>
+        </div>
+        
+        <!-- Amount -->
+        <div class="form-group">
+            <label for="amount">💰 Service Amount ($) *</label>
+            <input type="number" id="amount" name="amount" step="0.01" min="0" 
+                   placeholder="0.00"
+                   value="{% if booking %}{{ booking.amount }}{% endif %}" required>
+        </div>
+        
+        <!-- Status -->
+        <div class="form-group">
+            <label for="status">📊 Status</label>
+            <select id="status" name="status">
+                <option value="pending" {% if not booking or booking.status == 'pending' %}selected{% endif %}>Pending</option>
+                <option value="assigned" {% if booking and booking.status == 'assigned' %}selected{% endif %}>Assigned</option>
+                <option value="in_progress" {% if booking and booking.status == 'in_progress' %}selected{% endif %}>In Progress</option>
+                <option value="completed" {% if booking and booking.status == 'completed' %}selected{% endif %}>Completed</option>
+                <option value="cancelled" {% if booking and booking.status == 'cancelled' %}selected{% endif %}>Cancelled</option>
+            </select>
+        </div>
+        
+        <!-- Assigned Technician -->
+        <div class="form-group">
+            <label for="assigned_technician">👨‍🔧 Assign Technician</label>
+            <select id="assigned_technician" name="assigned_technician">
+                <option value="">Unassigned</option>
+                {% for tech in technicians %}
+                <option value="{{ tech.pk }}" {% if booking and booking.assigned_technician == tech %}selected{% endif %}>
+                    {{ tech.get_full_name }} - 
+                    {% if tech.country == 'kenya' %}🇰🇪 Kenya
+                    {% elif tech.country == 'uganda' %}🇺🇬 Uganda
+                    {% elif tech.country == 'zambia' %}🇿🇲 Zambia
+                    {% elif tech.country == 'south_africa' %}🇿🇦 South Africa
+                    {% endif %}
+                </option>
+                {% endfor %}
+            </select>
+        </div>
+        
+        <!-- Notes -->
+        <div class="form-group">
+            <label for="notes">📝 Additional Notes</label>
+            <textarea id="notes" name="notes" rows="4" 
+                      placeholder="Any special instructions or notes">{% if booking %}{{ booking.notes }}{% endif %}</textarea>
+        </div>
+        
+        <!-- Complaint Status -->
+        {% if booking %}
+        <div class="form-group">
+            <label style="display: flex; align-items: center; gap: 0.5rem; cursor: pointer;">
+                <input type="checkbox" id="has_complaint" name="has_complaint" 
+                       {% if booking.has_complaint %}checked{% endif %}
+                       style="width: auto; transform: scale(1.2);">
+                <span>⚠️ Client Has Complained</span>
+            </label>
+        </div>
+        
+        <div class="form-group" id="complaint-details-group">
+            <label for="complaint_details">Complaint Details</label>
+            <textarea id="complaint_details" name="complaint_details" rows="3" 
+                      placeholder="Describe the complaint">{% if booking %}{{ booking.complaint_details }}{% endif %}</textarea>
+        </div>
+        {% endif %}
+        
+        <div style="display: flex; gap: 1rem; justify-content: flex-end; margin-top: 2rem; padding-top: 2rem; border-top: 1px solid #dee2e6;">
+            <a href="{% if booking %}{% url 'booking_detail' booking.pk %}{% else %}{% url 'booking_list' %}{% endif %}" class="btn btn-secondary">
+                Cancel
+            </a>
+            <button type="submit" class="btn btn-success">
+                {% if booking %}💾 Update Order{% else %}➕ Create Order{% endif %}
+            </button>
+        </div>
+    </form>
+</div>
+
+<script>
+    // Show/hide complaint details based on checkbox
+    const hasComplaint = document.getElementById('has_complaint');
+    const complaintDetailsGroup = document.getElementById('complaint-details-group');
+    
+    if (hasComplaint && complaintDetailsGroup) {
+        // Set initial state
+        complaintDetailsGroup.style.display = hasComplaint.checked ? 'block' : 'none';
+        
+        // Handle checkbox changes
+        hasComplaint.addEventListener('change', function() {
+            complaintDetailsGroup.style.display = this.checked ? 'block' : 'none';
+        });
+    }
+    
+    // Filter technicians by selected country
+    const countrySelect = document.getElementById('country');
+    const technicianSelect = document.getElementById('assigned_technician');
+    const allOptions = Array.from(technicianSelect.options);
+    
+    countrySelect.addEventListener('change', function() {
+        const selectedCountry = this.value;
+        
+        // Reset and show all options
+        technicianSelect.innerHTML = '<option value="">Unassigned</option>';
+        
+        // Filter technicians by country
+        allOptions.slice(1).forEach(option => {
+            if (!selectedCountry || option.text.includes(selectedCountry === 'kenya' ? '🇰🇪' : 
+                                                        selectedCountry === 'uganda' ? '🇺🇬' :
+                                                        selectedCountry === 'zambia' ? '🇿🇲' :
+                                                        selectedCountry === 'south_africa' ? '🇿🇦' : '')) {
+                technicianSelect.appendChild(option.cloneNode(true));
+            }
+        });
+    });
+</script>
+{% endblock %}

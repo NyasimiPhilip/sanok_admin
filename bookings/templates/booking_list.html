@@ -1,0 +1,161 @@
+{% extends 'base.html' %}
+
+{% block title %}Orders - Sanok Fumigation{% endblock %}
+
+{% block content %}
+<div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 2rem;">
+    <h1 style="color: white; text-shadow: 2px 2px 4px rgba(0,0,0,0.2);">📋 Orders</h1>
+    {% if user.is_super_admin or user.is_admin %}
+    <a href="{% url 'booking_create' %}" class="btn btn-success">+ New Order</a>
+    {% endif %}
+</div>
+
+<!-- Filters -->
+<div class="card" style="margin-bottom: 2rem;">
+    <form method="get" style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 1rem; align-items: end;">
+        <div class="form-group" style="margin-bottom: 0;">
+            <label for="status">Status</label>
+            <select name="status" id="status" onchange="this.form.submit()">
+                <option value="">All Statuses</option>
+                <option value="pending" {% if request.GET.status == 'pending' %}selected{% endif %}>Pending</option>
+                <option value="assigned" {% if request.GET.status == 'assigned' %}selected{% endif %}>Assigned</option>
+                <option value="in_progress" {% if request.GET.status == 'in_progress' %}selected{% endif %}>In Progress</option>
+                <option value="completed" {% if request.GET.status == 'completed' %}selected{% endif %}>Completed</option>
+                <option value="cancelled" {% if request.GET.status == 'cancelled' %}selected{% endif %}>Cancelled</option>
+            </select>
+        </div>
+        
+        <div class="form-group" style="margin-bottom: 0;">
+            <label for="country">Country</label>
+            <select name="country" id="country" onchange="this.form.submit()">
+                <option value="">All Countries</option>
+                <option value="kenya" {% if request.GET.country == 'kenya' %}selected{% endif %}>🇰🇪 Kenya</option>
+                <option value="uganda" {% if request.GET.country == 'uganda' %}selected{% endif %}>🇺🇬 Uganda</option>
+                <option value="zambia" {% if request.GET.country == 'zambia' %}selected{% endif %}>🇿🇲 Zambia</option>
+                <option value="south_africa" {% if request.GET.country == 'south_africa' %}selected{% endif %}>🇿🇦 South Africa</option>
+            </select>
+        </div>
+        
+        <div class="form-group" style="margin-bottom: 0;">
+            <label for="pest_type">Pest Type</label>
+            <select name="pest_type" id="pest_type" onchange="this.form.submit()">
+                <option value="">All Types</option>
+                <option value="rodents" {% if request.GET.pest_type == 'rodents' %}selected{% endif %}>Rodents</option>
+                <option value="cockroaches" {% if request.GET.pest_type == 'cockroaches' %}selected{% endif %}>Cockroaches</option>
+                <option value="termites" {% if request.GET.pest_type == 'termites' %}selected{% endif %}>Termites</option>
+                <option value="bed_bugs" {% if request.GET.pest_type == 'bed_bugs' %}selected{% endif %}>Bed Bugs</option>
+                <option value="ants" {% if request.GET.pest_type == 'ants' %}selected{% endif %}>Ants</option>
+                <option value="mosquitoes" {% if request.GET.pest_type == 'mosquitoes' %}selected{% endif %}>Mosquitoes</option>
+                <option value="flies" {% if request.GET.pest_type == 'flies' %}selected{% endif %}>Flies</option>
+                <option value="other" {% if request.GET.pest_type == 'other' %}selected{% endif %}>Other</option>
+            </select>
+        </div>
+        
+        <div class="form-group" style="margin-bottom: 0;">
+            <label for="has_complaint">Complaints</label>
+            <select name="has_complaint" id="has_complaint" onchange="this.form.submit()">
+                <option value="">All</option>
+                <option value="yes" {% if request.GET.has_complaint == 'yes' %}selected{% endif %}>With Complaints</option>
+                <option value="no" {% if request.GET.has_complaint == 'no' %}selected{% endif %}>No Complaints</option>
+            </select>
+        </div>
+        
+        <div class="form-group" style="margin-bottom: 0;">
+            <label for="search">Search</label>
+            <input type="text" name="search" id="search" placeholder="Order #, Phone, Location" value="{{ request.GET.search }}">
+        </div>
+        
+        <div style="display: flex; gap: 0.5rem;">
+            <button type="submit" class="btn btn-primary">Filter</button>
+            <a href="{% url 'booking_list' %}" class="btn btn-secondary">Clear</a>
+        </div>
+    </form>
+</div>
+
+<!-- Orders Table -->
+<div class="card">
+    {% if bookings %}
+    <table class="table">
+        <thead>
+            <tr>
+                <th>Order #</th>
+                <th>Date & Time</th>
+                <th>Country</th>
+                <th>Location</th>
+                <th>Phone</th>
+                <th>Pest Type</th>
+                <th>Amount</th>
+                <th>Status</th>
+                <th>Technician</th>
+                <th>Complaint</th>
+                <th>Actions</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for booking in bookings %}
+            <tr>
+                <td><strong>{{ booking.order_number }}</strong></td>
+                <td>{{ booking.order_time|date:"M d, Y H:i" }}</td>
+                <td>
+                    {% if booking.country == 'kenya' %}🇰🇪
+                    {% elif booking.country == 'uganda' %}🇺🇬
+                    {% elif booking.country == 'zambia' %}🇿🇲
+                    {% elif booking.country == 'south_africa' %}🇿🇦
+                    {% endif %}
+                    {{ booking.get_country_display }}
+                </td>
+                <td>{{ booking.location_address|truncatechars:30 }}</td>
+                <td>{{ booking.client_phone }}</td>
+                <td>{{ booking.get_pest_type_display }}</td>
+                <td>${{ booking.amount|floatformat:2 }}</td>
+                <td>
+                    <span class="badge badge-{{ booking.status }}">
+                        {{ booking.get_status_display }}
+                    </span>
+                </td>
+                <td>{{ booking.assigned_technician.get_full_name|default:"Unassigned" }}</td>
+                <td style="text-align: center; font-size: 1.2rem;">
+                    {% if booking.has_complaint %}
+                        <span title="Has Complaint" style="color: #dc3545;">⚠️</span>
+                    {% else %}
+                        <span title="No Complaint" style="color: #28a745;">✅</span>
+                    {% endif %}
+                </td>
+                <td>
+                    <a href="{% url 'booking_detail' booking.pk %}" class="btn btn-primary" style="padding: 0.5rem 1rem; font-size: 0.85rem;">View</a>
+                </td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+    
+    <!-- Pagination -->
+    {% if is_paginated %}
+    <div style="display: flex; justify-content: center; align-items: center; gap: 1rem; margin-top: 2rem; padding-top: 2rem; border-top: 1px solid #dee2e6;">
+        {% if page_obj.has_previous %}
+        <a href="?page=1{% if request.GET.status %}&status={{ request.GET.status }}{% endif %}{% if request.GET.country %}&country={{ request.GET.country }}{% endif %}" class="btn btn-secondary">First</a>
+        <a href="?page={{ page_obj.previous_page_number }}{% if request.GET.status %}&status={{ request.GET.status }}{% endif %}{% if request.GET.country %}&country={{ request.GET.country }}{% endif %}" class="btn btn-secondary">Previous</a>
+        {% endif %}
+        
+        <span style="padding: 0.75rem 1.5rem; background: #f8f9fa; border-radius: 8px; font-weight: 600;">
+            Page {{ page_obj.number }} of {{ page_obj.paginator.num_pages }}
+        </span>
+        
+        {% if page_obj.has_next %}
+        <a href="?page={{ page_obj.next_page_number }}{% if request.GET.status %}&status={{ request.GET.status }}{% endif %}{% if request.GET.country %}&country={{ request.GET.country }}{% endif %}" class="btn btn-secondary">Next</a>
+        <a href="?page={{ page_obj.paginator.num_pages }}{% if request.GET.status %}&status={{ request.GET.status }}{% endif %}{% if request.GET.country %}&country={{ request.GET.country }}{% endif %}" class="btn btn-secondary">Last</a>
+        {% endif %}
+    </div>
+    {% endif %}
+    {% else %}
+    <div style="text-align: center; padding: 3rem;">
+        <div style="font-size: 4rem; margin-bottom: 1rem;">📋</div>
+        <h3 style="margin-bottom: 0.5rem;">No Orders Found</h3>
+        <p style="color: #6c757d;">{% if request.GET %}Try adjusting your filters{% else %}No orders have been created yet{% endif %}</p>
+        {% if user.is_super_admin or user.is_admin %}
+        <a href="{% url 'booking_create' %}" class="btn btn-success" style="margin-top: 1.5rem;">Create First Order</a>
+        {% endif %}
+    </div>
+    {% endif %}
+</div>
+{% endblock %}

@@ -1,0 +1,100 @@
+{% extends 'base.html' %}
+
+{% block title %}Home - Sanok Fumigation{% endblock %}
+
+{% block content %}
+<div style="text-align: center; padding: 4rem 2rem;">
+    <h1 style="font-size: 3.5rem; color: white; margin-bottom: 1rem; text-shadow: 2px 2px 4px rgba(0,0,0,0.2);">
+        🦟 Welcome to Sanok Fumigation
+    </h1>
+    <p style="font-size: 1.5rem; color: rgba(255,255,255,0.9); margin-bottom: 3rem;">
+        Professional Pest Control Services Across Africa
+    </p>
+    
+    <div style="display: flex; gap: 2rem; justify-content: center; margin-bottom: 4rem;">
+        <a href="{% url 'dashboard' %}" class="btn btn-primary" style="font-size: 1.2rem; padding: 1rem 2rem;">
+            Go to Dashboard
+        </a>
+        <a href="{% url 'booking_list' %}" class="btn btn-secondary" style="font-size: 1.2rem; padding: 1rem 2rem;">
+            View Orders
+        </a>
+    </div>
+</div>
+
+<div class="stats-grid">
+    <div class="stat-card" style="background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); color: white;">
+        <h3 style="color: rgba(255,255,255,0.9);">Countries Served</h3>
+        <div class="value">4</div>
+        <p>🇰🇪 🇺🇬 🇿🇲 🇿🇦</p>
+    </div>
+    
+    <div class="stat-card" style="background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%); color: white;">
+        <h3 style="color: rgba(255,255,255,0.9);">Pest Types</h3>
+        <div class="value">8+</div>
+        <p>Complete Coverage</p>
+    </div>
+    
+    <div class="stat-card" style="background: linear-gradient(135deg, #4facfe 0%, #00f2fe 100%); color: white;">
+        <h3 style="color: rgba(255,255,255,0.9);">24/7 Support</h3>
+        <div class="value">✓</div>
+        <p>Always Available</p>
+    </div>
+    
+    <div class="stat-card" style="background: linear-gradient(135deg, #43e97b 0%, #38f9d7 100%); color: white;">
+        <h3 style="color: rgba(255,255,255,0.9);">Professional Team</h3>
+        <div class="value">✓</div>
+        <p>Certified Technicians</p>
+    </div>
+</div>
+
+<div class="card">
+    <h2 style="margin-bottom: 1.5rem;">Our Services</h2>
+    <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 1.5rem;">
+        <div style="padding: 1.5rem; background: #f8f9fa; border-radius: 8px; text-align: center;">
+            <div style="font-size: 3rem; margin-bottom: 0.5rem;">🐀</div>
+            <h3>Rodents</h3>
+            <p style="color: #6c757d; font-size: 0.9rem;">Complete rodent control</p>
+        </div>
+        
+        <div style="padding: 1.5rem; background: #f8f9fa; border-radius: 8px; text-align: center;">
+            <div style="font-size: 3rem; margin-bottom: 0.5rem;">🪳</div>
+            <h3>Cockroaches</h3>
+            <p style="color: #6c757d; font-size: 0.9rem;">Effective elimination</p>
+        </div>
+        
+        <div style="padding: 1.5rem; background: #f8f9fa; border-radius: 8px; text-align: center;">
+            <div style="font-size: 3rem; margin-bottom: 0.5rem;">🐜</div>
+            <h3>Termites</h3>
+            <p style="color: #6c757d; font-size: 0.9rem;">Property protection</p>
+        </div>
+        
+        <div style="padding: 1.5rem; background: #f8f9fa; border-radius: 8px; text-align: center;">
+            <div style="font-size: 3rem; margin-bottom: 0.5rem;">🛏️</div>
+            <h3>Bed Bugs</h3>
+            <p style="color: #6c757d; font-size: 0.9rem;">Home comfort</p>
+        </div>
+        
+        <div style="padding: 1.5rem; background: #f8f9fa; border-radius: 8px; text-align: center;">
+            <div style="font-size: 3rem; margin-bottom: 0.5rem;">🦟</div>
+            <h3>Mosquitoes</h3>
+            <p style="color: #6c757d; font-size: 0.9rem;">Disease prevention</p>
+        </div>
+        
+        <div style="padding: 1.5rem; background: #f8f9fa; border-radius: 8px; text-align: center;">
+            <div style="font-size: 3rem; margin-bottom: 0.5rem;">🪰</div>
+            <h3>Flies</h3>
+            <p style="color: #6c757d; font-size: 0.9rem;">Hygiene maintenance</p>
+        </div>
+    </div>
+</div>
+
+{% if user.role == 'technician' %}
+<div class="card" style="background: #fff3cd; border: 2px solid #ffc107;">
+    <h3 style="color: #856404; margin-bottom: 1rem;">⏰ Your Access Hours</h3>
+    <p style="color: #856404;">
+        As a technician, you can access the system between <strong>5:00 AM - 12:00 PM</strong> (Morning only).
+        <br>Outside these hours, the system will be locked.
+    </p>
+</div>
+{% endif %}
+{% endblock %}
