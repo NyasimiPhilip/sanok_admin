@@ -1,14 +1,14 @@
 # Core Django
-Django==6.0.3
+Django>=5.0,<6.0
 
 # PostgreSQL Database Adapter
-psycopg2-binary==2.9.9
+psycopg2-binary>=2.9.9
 
 # WSGI Server for Production
-gunicorn==21.2.0
+gunicorn>=21.2.0
 
 # Environment Variables (optional but recommended)
-python-decouple==3.8
+python-decouple>=3.8
 
 # Timezone support
-pytz==2024.1
+pytz>=2024.1
