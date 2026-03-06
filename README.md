@@ -272,7 +272,7 @@ The admin interface includes:
 
 ## Technology Stack
 
-- **Framework**: Django 6.0.3
+- **Framework**: Django 5.x (latest stable)
 - **Database**: SQLite (can be changed to PostgreSQL/MySQL)
 - **Python**: 3.8+
 - **Admin Interface**: Django Admin (customized)
