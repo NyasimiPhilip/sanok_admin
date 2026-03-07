@@ -2,6 +2,10 @@
 
 {% block title %}{% block portal_title %}Super Admin{% endblock %} | Sanok Order Management System{% endblock %}
 
+{% block branding %}
+<h1 id="site-name"><a href="{% url 'super_admin:dashboard' %}">Sanok Order Management System</a></h1>
+{% endblock %}
+
 {% block usertools %}
 {% if user.is_authenticated %}
 Welcome,

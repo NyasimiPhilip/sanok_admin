@@ -2,6 +2,10 @@
 
 {% block title %}{% block portal_title %}Technician Portal{% endblock %} | Sanok Order Management System{% endblock %}
 
+{% block branding %}
+<h1 id="site-name"><a href="{% url 'technician:orders' %}">Sanok Order Management System</a></h1>
+{% endblock %}
+
 {% block usertools %}
 {% if user.is_authenticated %}
 Welcome,
