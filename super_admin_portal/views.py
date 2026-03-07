@@ -95,6 +95,13 @@ def user_edit_view(request, pk):
 
     if request.method == 'POST':
         try:
+            role = request.POST.get('role')
+            if role not in ('admin', 'technician'):
+                messages.error(request, 'Invalid role.')
+                return render(request, 'super_admin_portal/user_form.html', {'target': target})
+
+            target.username = request.POST.get('username', '').strip()
+            target.role = role
             target.first_name = request.POST.get('first_name', '')
             target.last_name = request.POST.get('last_name', '')
             target.email = request.POST.get('email', '')

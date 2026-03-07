@@ -12,18 +12,60 @@
 
 {% block usertools %}{% endblock %}
 
+{% block extrastyle %}
+{{ block.super }}
+<style>
+    body.login {
+        min-height: 100vh;
+    }
+
+    body.login #container {
+        min-height: 100vh;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+    }
+
+    body.login #content {
+        width: 100%;
+        display: flex;
+        justify-content: center;
+        padding: 24px;
+    }
+
+    body.login #content-main {
+        width: 100%;
+        max-width: 420px;
+        float: none;
+        margin: 0 auto;
+        padding: 24px;
+        box-sizing: border-box;
+        background: var(--body-bg);
+        border: 1px solid var(--hairline-color);
+        border-radius: 6px;
+    }
+
+    body.login .form-row {
+        margin-bottom: 16px;
+    }
+
+    body.login .submit-row {
+        padding-bottom: 0;
+        margin-bottom: 0;
+    }
+
+    body.login input[type="text"],
+    body.login input[type="password"] {
+        width: 100%;
+        box-sizing: border-box;
+    }
+    </style>
+{% endblock %}
+
 {% block content %}
 <div id="content-main">
     <form action="{% url 'login' %}" method="post" id="login-form">
         {% csrf_token %}
-
-        {% if messages %}
-        <ul class="messagelist">
-            {% for message in messages %}
-            <li{% if message.tags %} class="{{ message.tags }}"{% endif %}>{{ message }}</li>
-            {% endfor %}
-        </ul>
-        {% endif %}
 
         <div class="form-row">
             <label for="id_username">Username:</label>

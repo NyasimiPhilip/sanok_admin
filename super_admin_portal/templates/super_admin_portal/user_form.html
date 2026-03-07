@@ -8,20 +8,18 @@
         {% csrf_token %}
         <fieldset class="module aligned">
             <h2>{% if target %}Edit user{% else %}Add user{% endif %}</h2>
-            {% if not target %}
             <div class="form-row">
                 <label for="id_username">Username:</label>
-                <input type="text" name="username" id="id_username" required>
+                <input type="text" name="username" id="id_username" value="{{ target.username|default:'' }}" required>
             </div>
             <div class="form-row">
                 <label for="id_role">Role:</label>
                 <select name="role" id="id_role" required>
                     <option value="">Select role</option>
-                    <option value="admin">Admin</option>
-                    <option value="technician">Technician</option>
+                    <option value="admin" {% if target.role == 'admin' %}selected{% endif %}>Admin</option>
+                    <option value="technician" {% if target.role == 'technician' %}selected{% endif %}>Technician</option>
                 </select>
             </div>
-            {% endif %}
             <div class="form-row">
                 <label for="id_first_name">First name:</label>
                 <input type="text" name="first_name" id="id_first_name" value="{{ target.first_name|default:'' }}">
