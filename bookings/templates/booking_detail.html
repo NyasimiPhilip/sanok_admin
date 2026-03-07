@@ -246,24 +246,4 @@
     </div>
 </div>
 {% endif %}
-
-<!-- Instructions/Commands -->
-{% if booking.commands.all %}
-<div class="card" style="margin-top: 2rem;">
-    <h2 style="margin-bottom: 1.5rem; color: #93c1db;">📝 Instructions & Commands</h2>
-    {% for command in booking.commands.all %}
-    <div style="background: #f8f9fa; padding: 1rem; border-radius: 8px; margin-bottom: 1rem; border-left: 4px solid #93c1db;">
-        <div style="display: flex; justify-content: space-between; align-items: start; margin-bottom: 0.5rem;">
-            <strong style="text-transform: uppercase; color: #93c1db; font-size: 0.85rem;">
-                {{ command.get_instruction_type_display }}
-            </strong>
-            <span style="font-size: 0.85rem; color: #6c757d;">
-                {{ command.created_at|date:"M d, H:i" }}
-            </span>
-        </div>
-        <div>{{ command.description }}</div>
-    </div>
-    {% endfor %}
-</div>
-{% endif %}
 {% endblock %}

@@ -3,17 +3,7 @@ from django.contrib.auth.admin import UserAdmin
 from django.utils.html import format_html
 from django.db.models import Count, Sum, Q
 from django.utils import timezone
-from .models import CustomUser, Booking, BookingCommand
-
-
-class BookingCommandInline(admin.TabularInline):
-    """
-    Inline admin for order instructions
-    """
-    model = BookingCommand
-    extra = 1
-    fields = ('instruction_type', 'description', 'is_completed', 'created_at')
-    readonly_fields = ('created_at',)
+from .models import CustomUser, Booking
 
 
 @admin.register(CustomUser)
@@ -151,8 +141,6 @@ class BookingAdmin(admin.ModelAdmin):
             'classes': ('collapse',)
         }),
     )
-    
-    inlines = [BookingCommandInline]
     
     date_hierarchy = 'order_time'
     
@@ -300,44 +288,6 @@ class BookingAdmin(admin.ModelAdmin):
         }
         
         return super().changelist_view(request, extra_context=extra_context)
-
-
-@admin.register(BookingCommand)
-class BookingCommandAdmin(admin.ModelAdmin):
-    """
-    Admin for order instructions
-    """
-    list_display = (
-        'booking',
-        'instruction_type',
-        'description_short',
-        'is_completed',
-        'created_at',
-        'created_by',
-    )
-    
-    list_filter = ('instruction_type', 'is_completed', 'created_at')
-    search_fields = ('description', 'booking__order_number', 'booking__client_number')
-    readonly_fields = ('created_at', 'created_by')
-    
-    def description_short(self, obj):
-        """Show truncated description"""
-        if len(obj.description) > 50:
-            return obj.description[:50] + '...'
-        return obj.description
-    description_short.short_description = 'Description'
-    
-    def save_model(self, request, obj, form, change):
-        if not change:
-            obj.created_by = request.user
-        super().save_model(request, obj, form, change)
-    
-    def get_queryset(self, request):
-        qs = super().get_queryset(request)
-        # Technicians can only see instructions for their assigned orders
-        if hasattr(request.user, 'role') and request.user.role == 'technician':
-            return qs.filter(booking__assigned_technician=request.user)
-        return qs
 
 
 # Customize admin site headers
