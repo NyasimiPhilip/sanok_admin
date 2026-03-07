@@ -1,96 +1,74 @@
 {% extends 'super_admin_portal/base.html' %}
-{% block title %}{% if target %}Edit User{% else %}Add User{% endif %}{% endblock %}
+{% block portal_title %}{% if target %}Edit User{% else %}Add User{% endif %}{% endblock %}
+{% block portal_breadcrumbs %} &rsaquo; <a href="{% url 'super_admin:user_list' %}">Users</a> &rsaquo; {% if target %}{{ target.username }}{% else %}Add user{% endif %}{% endblock %}
 
-{% block content %}
-<div class="d-flex justify-content-between align-items-center mb-4">
-    <h3>{% if target %}Edit — {{ target.username }}{% else %}Add User{% endif %}</h3>
-    <a href="{% url 'super_admin:user_list' %}" class="btn btn-secondary">Back</a>
-</div>
-
-<div class="card" style="max-width: 680px;">
-    <div class="card-body">
-        <form method="post">
-            {% csrf_token %}
-            <div class="row g-3">
-
-                {% if not target %}
-                <div class="col-md-6">
-                    <label class="form-label">Username <span class="text-danger">*</span></label>
-                    <input type="text" name="username" class="form-control" required>
-                </div>
-                <div class="col-md-6">
-                    <label class="form-label">Role <span class="text-danger">*</span></label>
-                    <select name="role" class="form-select" required>
-                        <option value="">Select role</option>
-                        <option value="admin">Admin</option>
-                        <option value="technician">Technician</option>
-                    </select>
-                </div>
-                {% endif %}
-
-                <div class="col-md-6">
-                    <label class="form-label">First Name</label>
-                    <input type="text" name="first_name" class="form-control"
-                           value="{{ target.first_name|default:'' }}">
-                </div>
-                <div class="col-md-6">
-                    <label class="form-label">Last Name</label>
-                    <input type="text" name="last_name" class="form-control"
-                           value="{{ target.last_name|default:'' }}">
-                </div>
-
-                <div class="col-md-6">
-                    <label class="form-label">Email</label>
-                    <input type="email" name="email" class="form-control"
-                           value="{{ target.email|default:'' }}">
-                </div>
-                <div class="col-md-6">
-                    <label class="form-label">Phone Number</label>
-                    <input type="text" name="phone_number" class="form-control"
-                           value="{{ target.phone_number|default:'' }}">
-                </div>
-
-                <div class="col-md-6">
-                    <label class="form-label">Country</label>
-                    <select name="country" class="form-select">
-                        <option value="">None</option>
-                        <option value="kenya" {% if target.country == 'kenya' %}selected{% endif %}>Kenya</option>
-                        <option value="uganda" {% if target.country == 'uganda' %}selected{% endif %}>Uganda</option>
-                        <option value="zambia" {% if target.country == 'zambia' %}selected{% endif %}>Zambia</option>
-                        <option value="south_africa" {% if target.country == 'south_africa' %}selected{% endif %}>South Africa</option>
-                    </select>
-                </div>
-
-                <div class="col-md-6">
-                    <label class="form-label">{% if target %}New Password (leave blank to keep){% else %}Password <span class="text-danger">*</span>{% endif %}</label>
-                    <input type="password" name="password" class="form-control" {% if not target %}required{% endif %}>
-                </div>
-
-                {% if not target %}
-                <div class="col-md-6">
-                    <label class="form-label">Confirm Password <span class="text-danger">*</span></label>
-                    <input type="password" name="password_confirm" class="form-control" required>
-                </div>
-                {% endif %}
-
-                {% if target %}
-                <div class="col-12">
-                    <div class="form-check">
-                        <input class="form-check-input" type="checkbox" name="is_active" id="is_active"
-                               {% if target.is_active %}checked{% endif %}>
-                        <label class="form-check-label" for="is_active">Account Active</label>
-                    </div>
-                </div>
-                {% endif %}
-
-                <div class="col-12">
-                    <button type="submit" class="btn btn-primary">
-                        {% if target %}Save Changes{% else %}Create User{% endif %}
-                    </button>
-                    <a href="{% url 'super_admin:user_list' %}" class="btn btn-secondary ms-2">Cancel</a>
-                </div>
+{% block portal_content %}
+<div id="content-main">
+    <form method="post">
+        {% csrf_token %}
+        <fieldset class="module aligned">
+            <h2>{% if target %}Edit user{% else %}Add user{% endif %}</h2>
+            {% if not target %}
+            <div class="form-row">
+                <label for="id_username">Username:</label>
+                <input type="text" name="username" id="id_username" required>
             </div>
-        </form>
-    </div>
+            <div class="form-row">
+                <label for="id_role">Role:</label>
+                <select name="role" id="id_role" required>
+                    <option value="">Select role</option>
+                    <option value="admin">Admin</option>
+                    <option value="technician">Technician</option>
+                </select>
+            </div>
+            {% endif %}
+            <div class="form-row">
+                <label for="id_first_name">First name:</label>
+                <input type="text" name="first_name" id="id_first_name" value="{{ target.first_name|default:'' }}">
+            </div>
+            <div class="form-row">
+                <label for="id_last_name">Last name:</label>
+                <input type="text" name="last_name" id="id_last_name" value="{{ target.last_name|default:'' }}">
+            </div>
+            <div class="form-row">
+                <label for="id_email">Email:</label>
+                <input type="email" name="email" id="id_email" value="{{ target.email|default:'' }}">
+            </div>
+            <div class="form-row">
+                <label for="id_phone_number">Phone number:</label>
+                <input type="text" name="phone_number" id="id_phone_number" value="{{ target.phone_number|default:'' }}">
+            </div>
+            <div class="form-row">
+                <label for="id_country">Country:</label>
+                <select name="country" id="id_country">
+                    <option value="">None</option>
+                    <option value="kenya" {% if target.country == 'kenya' %}selected{% endif %}>Kenya</option>
+                    <option value="uganda" {% if target.country == 'uganda' %}selected{% endif %}>Uganda</option>
+                    <option value="zambia" {% if target.country == 'zambia' %}selected{% endif %}>Zambia</option>
+                    <option value="south_africa" {% if target.country == 'south_africa' %}selected{% endif %}>South Africa</option>
+                </select>
+            </div>
+            <div class="form-row">
+                <label for="id_password">{% if target %}New password{% else %}Password{% endif %}:</label>
+                <input type="password" name="password" id="id_password" {% if not target %}required{% endif %}>
+            </div>
+            {% if not target %}
+            <div class="form-row">
+                <label for="id_password_confirm">Confirm password:</label>
+                <input type="password" name="password_confirm" id="id_password_confirm" required>
+            </div>
+            {% endif %}
+            {% if target %}
+            <div class="form-row">
+                <label for="id_is_active">Account active:</label>
+                <input type="checkbox" name="is_active" id="id_is_active" {% if target.is_active %}checked{% endif %}>
+            </div>
+            {% endif %}
+        </fieldset>
+        <div class="submit-row">
+            <input type="submit" value="Save" class="default">
+            <a class="button" href="{% url 'super_admin:user_list' %}">Cancel</a>
+        </div>
+    </form>
 </div>
 {% endblock %}

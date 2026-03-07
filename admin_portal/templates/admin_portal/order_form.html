@@ -1,125 +1,98 @@
 {% extends 'admin_portal/base.html' %}
-{% block title %}{% if order %}Edit Order{% else %}New Order{% endif %}{% endblock %}
+{% block portal_title %}{% if order %}Edit Order{% else %}Add Order{% endif %}{% endblock %}
+{% block portal_breadcrumbs %} &rsaquo; <a href="{% url 'admin_portal:order_list' %}">Orders</a> &rsaquo; {% if order %}{{ order.order_number }}{% else %}Add order{% endif %}{% endblock %}
 
-{% block content %}
-<div class="d-flex justify-content-between align-items-center mb-4">
-    <h3>{% if order %}Edit Order {{ order.order_number }}{% else %}New Order{% endif %}</h3>
-    <a href="{% url 'admin_portal:order_list' %}" class="btn btn-secondary">Back</a>
-</div>
+{% block portal_content %}
+<div id="content-main">
+    <form method="post">
+        {% csrf_token %}
+        <fieldset class="module aligned">
+            <h2>{% if order %}Edit order{% else %}New order{% endif %}</h2>
 
-<div class="card">
-    <div class="card-body">
-        <form method="post">
-            {% csrf_token %}
-            <div class="row g-3">
-
-                <div class="col-md-6">
-                    <label class="form-label">Scheduled Date &amp; Time <span class="text-danger">*</span></label>
-                    <input type="datetime-local" name="order_time" class="form-control" required
-                           value="{% if order %}{% now 'Y' %}-{% if order.order_time %}{{ order.order_time|date:'Y-m-d\TH:i' }}{% endif %}{% endif %}">
-                </div>
-
-                <div class="col-md-6">
-                    <label class="form-label">Country <span class="text-danger">*</span></label>
-                    <select name="country" class="form-select" required>
-                        <option value="">Select country</option>
-                        <option value="kenya" {% if order.country == 'kenya' %}selected{% endif %}>Kenya</option>
-                        <option value="uganda" {% if order.country == 'uganda' %}selected{% endif %}>Uganda</option>
-                        <option value="zambia" {% if order.country == 'zambia' %}selected{% endif %}>Zambia</option>
-                        <option value="south_africa" {% if order.country == 'south_africa' %}selected{% endif %}>South Africa</option>
-                    </select>
-                </div>
-
-                <div class="col-md-6">
-                    <label class="form-label">Location Pin / Map URL <span class="text-danger">*</span></label>
-                    <input type="text" name="location_pin" class="form-control" required
-                           value="{{ order.location_pin|default:'' }}">
-                </div>
-
-                <div class="col-md-6">
-                    <label class="form-label">Location Address <span class="text-danger">*</span></label>
-                    <textarea name="location_address" class="form-control" rows="2" required>{{ order.location_address|default:'' }}</textarea>
-                </div>
-
-                <div class="col-md-6">
-                    <label class="form-label">Client Phone <span class="text-danger">*</span></label>
-                    <input type="text" name="client_phone" class="form-control" required
-                           value="{{ order.client_phone|default:'' }}">
-                </div>
-
-                <div class="col-md-6">
-                    <label class="form-label">Pest Type <span class="text-danger">*</span></label>
-                    <select name="pest_type" class="form-select" required>
-                        <option value="">Select pest type</option>
-                        <option value="rodents" {% if order.pest_type == 'rodents' %}selected{% endif %}>Rodents</option>
-                        <option value="cockroaches" {% if order.pest_type == 'cockroaches' %}selected{% endif %}>Cockroaches</option>
-                        <option value="termites" {% if order.pest_type == 'termites' %}selected{% endif %}>Termites</option>
-                        <option value="bed_bugs" {% if order.pest_type == 'bed_bugs' %}selected{% endif %}>Bed Bugs</option>
-                        <option value="ants" {% if order.pest_type == 'ants' %}selected{% endif %}>Ants</option>
-                        <option value="mosquitoes" {% if order.pest_type == 'mosquitoes' %}selected{% endif %}>Mosquitoes</option>
-                        <option value="flies" {% if order.pest_type == 'flies' %}selected{% endif %}>Flies</option>
-                        <option value="other" {% if order.pest_type == 'other' %}selected{% endif %}>Other</option>
-                    </select>
-                </div>
-
-                <div class="col-md-6">
-                    <label class="form-label">Amount <span class="text-danger">*</span></label>
-                    <input type="number" name="amount" step="0.01" min="0" class="form-control" required
-                           value="{{ order.amount|default:'' }}">
-                </div>
-
-                <div class="col-md-6">
-                    <label class="form-label">Assign Technician</label>
-                    <select name="assigned_technician" class="form-select">
-                        <option value="">Unassigned</option>
-                        {% for tech in technicians %}
-                        <option value="{{ tech.pk }}" {% if order.assigned_technician == tech %}selected{% endif %}>
-                            {{ tech.get_full_name }} ({{ tech.get_country_display }})
-                        </option>
-                        {% endfor %}
-                    </select>
-                </div>
-
-                {% if order %}
-                <div class="col-md-6">
-                    <label class="form-label">Status</label>
-                    <select name="status" class="form-select">
-                        <option value="pending" {% if order.status == 'pending' %}selected{% endif %}>Pending</option>
-                        <option value="assigned" {% if order.status == 'assigned' %}selected{% endif %}>Assigned</option>
-                        <option value="in_progress" {% if order.status == 'in_progress' %}selected{% endif %}>In Progress</option>
-                        <option value="completed" {% if order.status == 'completed' %}selected{% endif %}>Completed</option>
-                        <option value="cancelled" {% if order.status == 'cancelled' %}selected{% endif %}>Cancelled</option>
-                    </select>
-                </div>
-                {% endif %}
-
-                <div class="col-12">
-                    <label class="form-label">Notes</label>
-                    <textarea name="notes" class="form-control" rows="3">{{ order.notes|default:'' }}</textarea>
-                </div>
-
-                {% if order %}
-                <div class="col-md-6">
-                    <div class="form-check mt-2">
-                        <input class="form-check-input" type="checkbox" name="has_complaint" id="has_complaint"
-                               {% if order.has_complaint %}checked{% endif %}>
-                        <label class="form-check-label" for="has_complaint">Client Has Complained</label>
-                    </div>
-                </div>
-                <div class="col-12">
-                    <label class="form-label">Complaint Details</label>
-                    <textarea name="complaint_details" class="form-control" rows="2">{{ order.complaint_details|default:'' }}</textarea>
-                </div>
-                {% endif %}
-
-                <div class="col-12">
-                    <button type="submit" class="btn btn-primary">
-                        {% if order %}Update Order{% else %}Create Order{% endif %}
-                    </button>
-                    <a href="{% url 'admin_portal:order_list' %}" class="btn btn-secondary ms-2">Cancel</a>
-                </div>
+            <div class="form-row">
+                <label for="id_order_time">Scheduled date and time:</label>
+                <input type="datetime-local" name="order_time" id="id_order_time" required value="{% if order and order.order_time %}{{ order.order_time|date:'Y-m-d\\TH:i' }}{% endif %}">
             </div>
-        </form>
-    </div>
+            <div class="form-row">
+                <label for="id_country">Country:</label>
+                <select name="country" id="id_country" required>
+                    <option value="">Select country</option>
+                    <option value="kenya" {% if order.country == 'kenya' %}selected{% endif %}>Kenya</option>
+                    <option value="uganda" {% if order.country == 'uganda' %}selected{% endif %}>Uganda</option>
+                    <option value="zambia" {% if order.country == 'zambia' %}selected{% endif %}>Zambia</option>
+                    <option value="south_africa" {% if order.country == 'south_africa' %}selected{% endif %}>South Africa</option>
+                </select>
+            </div>
+            <div class="form-row">
+                <label for="id_location_pin">Location pin / map URL:</label>
+                <input type="text" name="location_pin" id="id_location_pin" required value="{{ order.location_pin|default:'' }}">
+            </div>
+            <div class="form-row">
+                <label for="id_location_address">Location address:</label>
+                <textarea name="location_address" id="id_location_address" rows="3" required>{{ order.location_address|default:'' }}</textarea>
+            </div>
+            <div class="form-row">
+                <label for="id_client_phone">Client phone:</label>
+                <input type="text" name="client_phone" id="id_client_phone" required value="{{ order.client_phone|default:'' }}">
+            </div>
+            <div class="form-row">
+                <label for="id_pest_type">Pest type:</label>
+                <select name="pest_type" id="id_pest_type" required>
+                    <option value="">Select pest type</option>
+                    <option value="rodents" {% if order.pest_type == 'rodents' %}selected{% endif %}>Rodents</option>
+                    <option value="cockroaches" {% if order.pest_type == 'cockroaches' %}selected{% endif %}>Cockroaches</option>
+                    <option value="termites" {% if order.pest_type == 'termites' %}selected{% endif %}>Termites</option>
+                    <option value="bed_bugs" {% if order.pest_type == 'bed_bugs' %}selected{% endif %}>Bed Bugs</option>
+                    <option value="ants" {% if order.pest_type == 'ants' %}selected{% endif %}>Ants</option>
+                    <option value="mosquitoes" {% if order.pest_type == 'mosquitoes' %}selected{% endif %}>Mosquitoes</option>
+                    <option value="flies" {% if order.pest_type == 'flies' %}selected{% endif %}>Flies</option>
+                    <option value="other" {% if order.pest_type == 'other' %}selected{% endif %}>Other</option>
+                </select>
+            </div>
+            <div class="form-row">
+                <label for="id_amount">Amount:</label>
+                <input type="number" name="amount" id="id_amount" step="0.01" min="0" required value="{{ order.amount|default:'' }}">
+            </div>
+            <div class="form-row">
+                <label for="id_assigned_technician">Assigned technician:</label>
+                <select name="assigned_technician" id="id_assigned_technician">
+                    <option value="">Unassigned</option>
+                    {% for tech in technicians %}
+                    <option value="{{ tech.pk }}" {% if order.assigned_technician == tech %}selected{% endif %}>{{ tech.get_full_name }} ({{ tech.get_country_display }})</option>
+                    {% endfor %}
+                </select>
+            </div>
+            {% if order %}
+            <div class="form-row">
+                <label for="id_status">Status:</label>
+                <select name="status" id="id_status">
+                    <option value="pending" {% if order.status == 'pending' %}selected{% endif %}>Pending</option>
+                    <option value="assigned" {% if order.status == 'assigned' %}selected{% endif %}>Assigned</option>
+                    <option value="in_progress" {% if order.status == 'in_progress' %}selected{% endif %}>In Progress</option>
+                    <option value="completed" {% if order.status == 'completed' %}selected{% endif %}>Completed</option>
+                    <option value="cancelled" {% if order.status == 'cancelled' %}selected{% endif %}>Cancelled</option>
+                </select>
+            </div>
+            {% endif %}
+            <div class="form-row">
+                <label for="id_notes">Notes:</label>
+                <textarea name="notes" id="id_notes" rows="4">{{ order.notes|default:'' }}</textarea>
+            </div>
+            {% if order %}
+            <div class="form-row">
+                <label for="id_has_complaint">Client has complained:</label>
+                <input type="checkbox" name="has_complaint" id="id_has_complaint" {% if order.has_complaint %}checked{% endif %}>
+            </div>
+            <div class="form-row">
+                <label for="id_complaint_details">Complaint details:</label>
+                <textarea name="complaint_details" id="id_complaint_details" rows="3">{{ order.complaint_details|default:'' }}</textarea>
+            </div>
+            {% endif %}
+        </fieldset>
+        <div class="submit-row">
+            <input type="submit" value="Save" class="default">
+            <a class="button" href="{% url 'admin_portal:order_list' %}">Cancel</a>
+        </div>
+    </form>
 </div>
 {% endblock %}

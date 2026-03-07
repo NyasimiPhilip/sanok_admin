@@ -1,71 +1,36 @@
 {% extends 'super_admin_portal/base.html' %}
-{% block title %}Dashboard{% endblock %}
+{% block portal_title %}Dashboard{% endblock %}
+{% block portal_breadcrumbs %} &rsaquo; Dashboard{% endblock %}
 
-{% block content %}
-<h3 class="mb-4">System Overview</h3>
+{% block portal_content %}
+<div id="content-main">
+    <ul class="object-tools">
+        <li><a href="{% url 'super_admin:user_list' %}">View users</a></li>
+        <li><a href="{% url 'super_admin:user_create' %}">Add user</a></li>
+        <li><a href="{% url 'super_admin:order_list' %}">View orders</a></li>
+    </ul>
 
-<div class="row g-3 mb-4">
-    <div class="col-sm-6 col-md-4 col-lg-2">
-        <div class="card border-primary text-center h-100">
-            <div class="card-body">
-                <h6 class="card-title text-primary">Total Orders</h6>
-                <p class="display-6 fw-bold text-primary">{{ stats.total_orders }}</p>
-            </div>
-        </div>
+    <div class="module">
+        <h2>System summary</h2>
+        <table>
+            <tbody>
+                <tr><th>Total orders</th><td>{{ stats.total_orders }}</td></tr>
+                <tr><th>Pending orders</th><td>{{ stats.pending }}</td></tr>
+                <tr><th>Completed orders</th><td>{{ stats.completed }}</td></tr>
+                <tr><th>Orders with complaints</th><td>{{ stats.with_complaints }}</td></tr>
+                <tr><th>Admins</th><td>{{ stats.total_admins }}</td></tr>
+                <tr><th>Technicians</th><td>{{ stats.total_technicians }}</td></tr>
+            </tbody>
+        </table>
     </div>
-    <div class="col-sm-6 col-md-4 col-lg-2">
-        <div class="card border-primary text-center h-100">
-            <div class="card-body">
-                <h6 class="card-title text-primary">Pending</h6>
-                <p class="display-6 fw-bold text-primary">{{ stats.pending }}</p>
-            </div>
-        </div>
-    </div>
-    <div class="col-sm-6 col-md-4 col-lg-2">
-        <div class="card border-primary text-center h-100">
-            <div class="card-body">
-                <h6 class="card-title text-primary">Completed</h6>
-                <p class="display-6 fw-bold text-primary">{{ stats.completed }}</p>
-            </div>
-        </div>
-    </div>
-    <div class="col-sm-6 col-md-4 col-lg-2">
-        <div class="card border-primary text-center h-100">
-            <div class="card-body">
-                <h6 class="card-title text-primary">Complaints</h6>
-                <p class="display-6 fw-bold text-primary">{{ stats.with_complaints }}</p>
-            </div>
-        </div>
-    </div>
-    <div class="col-sm-6 col-md-4 col-lg-2">
-        <div class="card border-primary text-center h-100">
-            <div class="card-body">
-                <h6 class="card-title text-primary">Admins</h6>
-                <p class="display-6 fw-bold text-primary">{{ stats.total_admins }}</p>
-            </div>
-        </div>
-    </div>
-    <div class="col-sm-6 col-md-4 col-lg-2">
-        <div class="card border-primary text-center h-100">
-            <div class="card-body">
-                <h6 class="card-title text-primary">Technicians</h6>
-                <p class="display-6 fw-bold text-primary">{{ stats.total_technicians }}</p>
-            </div>
-        </div>
-    </div>
-</div>
 
-<div class="card">
-    <div class="card-header bg-primary text-white d-flex justify-content-between align-items-center">
-        <strong>Recent Orders</strong>
-        <a href="{% url 'super_admin:order_list' %}" class="btn btn-sm btn-light">View All</a>
-    </div>
-    <div class="card-body p-0">
-        <div class="table-responsive">
-            <table class="table table-hover mb-0">
-                <thead class="table-light">
+    <div class="module">
+        <h2>Recent orders</h2>
+        <div class="results">
+            <table id="result_list">
+                <thead>
                     <tr>
-                        <th>Order #</th>
+                        <th>Order</th>
                         <th>Scheduled</th>
                         <th>Country</th>
                         <th>Pest</th>
@@ -76,24 +41,15 @@
                 <tbody>
                     {% for order in recent %}
                     <tr>
-                        <td>{{ order.order_number }}</td>
+                        <th>{{ order.order_number }}</th>
                         <td>{{ order.order_time|date:"d M Y H:i" }}</td>
                         <td>{{ order.get_country_display }}</td>
                         <td>{{ order.get_pest_type_display }}</td>
-                        <td>
-                            <span class="badge
-                                {% if order.status == 'pending' %}bg-warning text-dark
-                                {% elif order.status == 'assigned' %}bg-info
-                                {% elif order.status == 'in_progress' %}bg-primary
-                                {% elif order.status == 'completed' %}bg-success
-                                {% else %}bg-secondary{% endif %}">
-                                {{ order.get_status_display }}
-                            </span>
-                        </td>
+                        <td>{{ order.get_status_display }}</td>
                         <td>{{ order.assigned_technician.get_full_name|default:'-' }}</td>
                     </tr>
                     {% empty %}
-                    <tr><td colspan="6" class="text-center text-muted">No orders yet.</td></tr>
+                    <tr><td colspan="6">No orders available.</td></tr>
                     {% endfor %}
                 </tbody>
             </table>

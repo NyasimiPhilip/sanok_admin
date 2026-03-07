@@ -1,38 +1,41 @@
 {% extends 'super_admin_portal/base.html' %}
-{% block title %}Users{% endblock %}
+{% block portal_title %}Users{% endblock %}
+{% block portal_breadcrumbs %} &rsaquo; Users{% endblock %}
 
-{% block content %}
-<div class="d-flex justify-content-between align-items-center mb-3">
-    <h3>User Management</h3>
-    <a href="{% url 'super_admin:user_create' %}" class="btn btn-primary">+ Add User</a>
-</div>
+{% block portal_content %}
+<div id="content-main">
+    <ul class="object-tools">
+        <li><a href="{% url 'super_admin:user_create' %}">Add user</a></li>
+    </ul>
 
-<div class="card mb-3">
-    <div class="card-body">
-        <form method="get" class="row g-2">
-            <div class="col-md-3">
-                <select name="role" class="form-select form-select-sm">
-                    <option value="">All Roles</option>
-                    <option value="admin" {% if request.GET.role == 'admin' %}selected{% endif %}>Admins</option>
-                    <option value="technician" {% if request.GET.role == 'technician' %}selected{% endif %}>Technicians</option>
-                </select>
-            </div>
-            <div class="col-md-5">
-                <input type="text" name="search" class="form-control form-control-sm"
-                       value="{{ request.GET.search }}" placeholder="Search name or username">
-            </div>
-            <div class="col-md-2">
-                <button type="submit" class="btn btn-primary btn-sm w-100">Filter</button>
+    <div class="module filtered">
+        <h2>Filter users</h2>
+        <form method="get">
+            <fieldset class="module aligned">
+                <div class="form-row">
+                    <label for="id_role">Role:</label>
+                    <select name="role" id="id_role">
+                        <option value="">All roles</option>
+                        <option value="admin" {% if request.GET.role == 'admin' %}selected{% endif %}>Admins</option>
+                        <option value="technician" {% if request.GET.role == 'technician' %}selected{% endif %}>Technicians</option>
+                    </select>
+                </div>
+                <div class="form-row">
+                    <label for="id_search">Search:</label>
+                    <input type="text" name="search" id="id_search" value="{{ request.GET.search }}">
+                </div>
+            </fieldset>
+            <div class="submit-row">
+                <input type="submit" value="Apply">
             </div>
         </form>
     </div>
-</div>
 
-<div class="card">
-    <div class="card-body p-0">
-        <div class="table-responsive">
-            <table class="table table-hover mb-0">
-                <thead class="table-primary">
+    <div class="module">
+        <h2>Users</h2>
+        <div class="results">
+            <table id="result_list">
+                <thead>
                     <tr>
                         <th>Name</th>
                         <th>Username</th>
@@ -46,41 +49,28 @@
                 <tbody>
                     {% for u in users %}
                     <tr>
-                        <td>{{ u.get_full_name }}</td>
+                        <th>{{ u.get_full_name }}</th>
                         <td>{{ u.username }}</td>
-                        <td>
-                            <span class="badge {% if u.role == 'admin' %}bg-primary{% else %}bg-secondary{% endif %}">
-                                {{ u.get_role_display }}
-                            </span>
-                        </td>
+                        <td>{{ u.get_role_display }}</td>
                         <td>{{ u.get_country_display|default:'-' }}</td>
                         <td>{{ u.phone_number|default:'-' }}</td>
+                        <td>{% if u.is_active %}Active{% else %}Inactive{% endif %}</td>
                         <td>
-                            {% if u.is_active %}
-                            <span class="badge bg-success">Active</span>
-                            {% else %}
-                            <span class="badge bg-secondary">Inactive</span>
-                            {% endif %}
-                        </td>
-                        <td>
-                            <div class="d-flex gap-1">
-                                <a href="{% url 'super_admin:user_edit' u.pk %}" class="btn btn-sm btn-outline-primary">Edit</a>
-                                <form method="post" action="{% url 'super_admin:user_toggle' u.pk %}">
-                                    {% csrf_token %}
-                                    <button class="btn btn-sm {% if u.is_active %}btn-outline-warning{% else %}btn-outline-success{% endif %}">
-                                        {% if u.is_active %}Deactivate{% else %}Activate{% endif %}
-                                    </button>
-                                </form>
-                                <form method="post" action="{% url 'super_admin:user_delete' u.pk %}"
-                                      onsubmit="return confirm('Delete {{ u.username }}?');">
-                                    {% csrf_token %}
-                                    <button class="btn btn-sm btn-outline-danger">Delete</button>
-                                </form>
-                            </div>
+                            <a href="{% url 'super_admin:user_edit' u.pk %}">Edit</a>
+                            |
+                            <form method="post" action="{% url 'super_admin:user_toggle' u.pk %}" style="display:inline;">
+                                {% csrf_token %}
+                                <button type="submit">{% if u.is_active %}Deactivate{% else %}Activate{% endif %}</button>
+                            </form>
+                            |
+                            <form method="post" action="{% url 'super_admin:user_delete' u.pk %}" style="display:inline;">
+                                {% csrf_token %}
+                                <button type="submit" onclick="return confirm('Delete {{ u.username }}?');">Delete</button>
+                            </form>
                         </td>
                     </tr>
                     {% empty %}
-                    <tr><td colspan="7" class="text-center text-muted">No users found.</td></tr>
+                    <tr><td colspan="7">No users found.</td></tr>
                     {% endfor %}
                 </tbody>
             </table>

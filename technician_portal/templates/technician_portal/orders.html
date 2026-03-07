@@ -1,50 +1,39 @@
 {% extends 'technician_portal/base.html' %}
-{% block title %}My Orders Today{% endblock %}
+{% block portal_title %}My Orders{% endblock %}
+{% block portal_breadcrumbs %} &rsaquo; Orders{% endblock %}
 
-{% block content %}
-<h3 class="mb-4">My Orders — {{ today }}</h3>
-
-{% if not orders %}
-<div class="alert alert-info">No orders assigned to you today.</div>
-{% else %}
-<div class="table-responsive">
-    <table class="table table-bordered table-hover bg-white">
-        <thead class="table-primary">
-            <tr>
-                <th>Order #</th>
-                <th>Scheduled Time</th>
-                <th>Address</th>
-                <th>Phone</th>
-                <th>Pest Type</th>
-                <th>Status</th>
-                <th>Action</th>
-            </tr>
-        </thead>
-        <tbody>
-            {% for order in orders %}
-            <tr>
-                <td><strong>{{ order.order_number }}</strong></td>
-                <td>{{ order.order_time|date:"H:i" }}</td>
-                <td>{{ order.location_address }}</td>
-                <td><a href="tel:{{ order.client_phone }}">{{ order.client_phone }}</a></td>
-                <td>{{ order.get_pest_type_display }}</td>
-                <td>
-                    <span class="badge
-                        {% if order.status == 'pending' %}bg-warning text-dark
-                        {% elif order.status == 'assigned' %}bg-info
-                        {% elif order.status == 'in_progress' %}bg-primary
-                        {% elif order.status == 'completed' %}bg-success
-                        {% else %}bg-secondary{% endif %}">
-                        {{ order.get_status_display }}
-                    </span>
-                </td>
-                <td>
-                    <a href="{% url 'technician:order_detail' order.pk %}" class="btn btn-sm btn-outline-primary">View</a>
-                </td>
-            </tr>
-            {% endfor %}
-        </tbody>
-    </table>
+{% block portal_content %}
+<div id="content-main">
+    <div class="module">
+        <h2>Assigned orders for {{ today }}</h2>
+        <div class="results">
+            <table id="result_list">
+                <thead>
+                    <tr>
+                        <th>Order</th>
+                        <th>Scheduled time</th>
+                        <th>Address</th>
+                        <th>Phone</th>
+                        <th>Pest type</th>
+                        <th>Status</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for order in orders %}
+                    <tr>
+                        <th><a href="{% url 'technician:order_detail' order.pk %}">{{ order.order_number }}</a></th>
+                        <td>{{ order.order_time|date:"H:i" }}</td>
+                        <td>{{ order.location_address }}</td>
+                        <td><a href="tel:{{ order.client_phone }}">{{ order.client_phone }}</a></td>
+                        <td>{{ order.get_pest_type_display }}</td>
+                        <td>{{ order.get_status_display }}</td>
+                    </tr>
+                    {% empty %}
+                    <tr><td colspan="6">No orders assigned to you today.</td></tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </div>
 </div>
-{% endif %}
 {% endblock %}
