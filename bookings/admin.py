@@ -1,9 +1,13 @@
 from django.contrib import admin
+from django.contrib.auth.models import Group
 from django.contrib.auth.admin import UserAdmin
 from django.utils.html import format_html
 from django.db.models import Count, Q
 from django.utils import timezone
 from .models import CustomUser, Booking
+
+
+admin.site.unregister(Group)
 
 
 @admin.register(CustomUser)
