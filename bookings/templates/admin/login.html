@@ -4,6 +4,27 @@
 {% block extrastyle %}
 {{ block.super }}
 <style>
+    :root,
+    html[data-theme="light"],
+    html[data-theme="dark"] {
+        color-scheme: light !important;
+        --body-bg: #93c1db;
+        --body-fg: #2c3e50;
+        --header-bg: #ffffff;
+        --header-color: #2c3e50;
+        --primary: #93c1db;
+        --secondary: #7ab0cd;
+        --link-fg: #93c1db;
+        --link-hover-color: #7ab0cd;
+        --hairline-color: #e0e0e0;
+        --border-color: #dee2e6;
+    }
+
+    .theme-toggle,
+    .theme-toggle-container {
+        display: none !important;
+    }
+
     body {
         background: #93c1db !important;
     }
