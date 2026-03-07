@@ -284,6 +284,268 @@
             color: rgba(255, 255, 255, 0.8);
             margin-top: 4rem;
         }
+        
+        /* ============================================
+           RESPONSIVE DESIGN - MOBILE & TABLET
+           ============================================ */
+        
+        /* Mobile Navbar Toggle Button */
+        .mobile-menu-toggle {
+            display: none;
+            background: none;
+            border: none;
+            font-size: 1.5rem;
+            cursor: pointer;
+            color: #333;
+        }
+        
+        /* Tablet and below (≤ 1024px) */
+        @media (max-width: 1024px) {
+            .container {
+                max-width: 100%;
+                padding: 0 1.5rem;
+                margin: 1.5rem auto;
+            }
+            
+            .card {
+                padding: 1.5rem;
+            }
+            
+            .stats-grid {
+                grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+                gap: 1rem;
+            }
+            
+            .stat-card {
+                padding: 1.25rem;
+            }
+            
+            .stat-card .value {
+                font-size: 2rem;
+            }
+            
+            .table {
+                font-size: 0.9rem;
+            }
+            
+            .table th,
+            .table td {
+                padding: 0.75rem 0.5rem;
+            }
+        }
+        
+        /* Mobile devices (≤ 768px) */
+        @media (max-width: 768px) {
+            .navbar {
+                flex-wrap: wrap;
+                padding: 1rem;
+            }
+            
+            .navbar-brand {
+                font-size: 1.2rem;
+            }
+            
+            .mobile-menu-toggle {
+                display: block;
+            }
+            
+            .navbar-menu {
+                display: none;
+                flex-direction: column;
+                width: 100%;
+                gap: 0.5rem;
+                margin-top: 1rem;
+                padding-top: 1rem;
+                border-top: 1px solid #dee2e6;
+            }
+            
+            .navbar-menu.active {
+                display: flex;
+            }
+            
+            .navbar-menu a {
+                padding: 0.75rem;
+                width: 100%;
+                text-align: center;
+                background: #f8f9fa;
+                border-radius: 6px;
+            }
+            
+            .user-info {
+                flex-direction: column;
+                gap: 0.5rem;
+                padding: 0.75rem;
+                width: 100%;
+                text-align: center;
+            }
+            
+            .container {
+                padding: 0 1rem;
+                margin: 1rem auto;
+            }
+            
+            .card {
+                padding: 1rem;
+                margin-bottom: 1rem;
+            }
+            
+            .stats-grid {
+                grid-template-columns: 1fr;
+                gap: 1rem;
+            }
+            
+            .stat-card {
+                padding: 1rem;
+            }
+            
+            .stat-card .value {
+                font-size: 1.75rem;
+            }
+            
+            h1 {
+                font-size: 1.5rem !important;
+            }
+            
+            h2 {
+                font-size: 1.25rem !important;
+            }
+            
+            h3 {
+                font-size: 1rem !important;
+            }
+            
+            /* Table responsive - scroll horizontally */
+            .table-wrapper {
+                overflow-x: auto;
+                -webkit-overflow-scrolling: touch;
+            }
+            
+            .table {
+                min-width: 600px;
+                font-size: 0.85rem;
+            }
+            
+            .table th,
+            .table td {
+                padding: 0.5rem;
+                white-space: nowrap;
+            }
+            
+            /* Stack buttons vertically */
+            .btn-group,
+            div[style*="display: flex"] {
+                flex-direction: column !important;
+            }
+            
+            .btn {
+                width: 100%;
+                margin-bottom: 0.5rem;
+            }
+            
+            /* Forms on mobile */
+            .form-group input,
+            .form-group select,
+            .form-group textarea {
+                font-size: 16px; /* Prevents zoom on iOS */
+            }
+            
+            /* Footer */
+            footer {
+                padding: 1.5rem 1rem;
+                font-size: 0.9rem;
+                margin-top: 2rem;
+            }
+        }
+        
+        /* Small mobile devices (≤ 480px) */
+        @media (max-width: 480px) {
+            .navbar {
+                padding: 0.75rem;
+            }
+            
+            .navbar-brand {
+                font-size: 1rem;
+            }
+            
+            .container {
+                padding: 0 0.75rem;
+            }
+            
+            .card {
+                padding: 0.75rem;
+                border-radius: 8px;
+            }
+            
+            .stat-card {
+                padding: 0.75rem;
+            }
+            
+            .stat-card .value {
+                font-size: 1.5rem;
+            }
+            
+            .btn {
+                padding: 0.6rem 1rem;
+                font-size: 0.9rem;
+            }
+            
+            .badge {
+                font-size: 0.75rem;
+                padding: 0.25rem 0.5rem;
+            }
+            
+            .alert {
+                padding: 0.75rem 1rem;
+                font-size: 0.9rem;
+            }
+            
+            h1 {
+                font-size: 1.25rem !important;
+                margin-bottom: 1rem !important;
+            }
+            
+            h2 {
+                font-size: 1.1rem !important;
+            }
+            
+            footer p {
+                font-size: 0.8rem;
+            }
+        }
+        
+        /* Landscape orientation on mobile */
+        @media (max-width: 768px) and (orientation: landscape) {
+            .container {
+                margin: 0.5rem auto;
+            }
+            
+            .card {
+                margin-bottom: 0.75rem;
+            }
+            
+            .navbar {
+                padding: 0.5rem 1rem;
+            }
+        }
+        
+        /* Print styles */
+        @media print {
+            .navbar,
+            .btn,
+            footer {
+                display: none;
+            }
+            
+            .container {
+                max-width: 100%;
+                padding: 0;
+            }
+            
+            .card {
+                box-shadow: none;
+                page-break-inside: avoid;
+            }
+        }
     </style>
     {% block extra_css %}{% endblock %}
 </head>
@@ -291,7 +553,8 @@
     {% if user.is_authenticated %}
     <nav class="navbar">
         <a href="{% url 'home' %}" class="navbar-brand">🦟 Sanok Fumigation</a>
-        <div class="navbar-menu">
+        <button class="mobile-menu-toggle" onclick="toggleMobileMenu()">☰</button>
+        <div class="navbar-menu" id="navbarMenu">
             <a href="{% url 'dashboard' %}">Dashboard</a>
             <a href="{% url 'booking_list' %}">Orders</a>
             {% if user.is_super_admin or user.is_admin %}
@@ -334,6 +597,33 @@
     <footer>
         <p>&copy; 2026 Sanok Fumigation Services | Serving Kenya, Uganda, Zambia & South Africa</p>
     </footer>
+    
+    <script>
+        // Mobile menu toggle
+        function toggleMobileMenu() {
+            const menu = document.getElementById('navbarMenu');
+            menu.classList.toggle('active');
+        }
+        
+        // Close mobile menu when clicking outside
+        document.addEventListener('click', function(event) {
+            const navbar = document.querySelector('.navbar');
+            const menu = document.getElementById('navbarMenu');
+            const toggle = document.querySelector('.mobile-menu-toggle');
+            
+            if (menu && !navbar.contains(event.target) && menu.classList.contains('active')) {
+                menu.classList.remove('active');
+            }
+        });
+        
+        // Close mobile menu when window is resized to desktop
+        window.addEventListener('resize', function() {
+            const menu = document.getElementById('navbarMenu');
+            if (window.innerWidth > 768 && menu) {
+                menu.classList.remove('active');
+            }
+        });
+    </script>
     
     {% block extra_js %}{% endblock %}
 </body>

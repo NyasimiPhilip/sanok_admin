@@ -222,6 +222,36 @@ class Booking(models.Model):
         current_time = timezone.now()
         current_hour = current_time.hour
         return 5 <= current_hour < 12
+    
+    def get_currency(self):
+        """
+        Get currency symbol based on country
+        """
+        currency_map = {
+            'kenya': 'KES',
+            'uganda': 'UGX',
+            'zambia': 'ZMW',
+            'south_africa': 'ZAR',
+        }
+        return currency_map.get(self.country, 'USD')
+    
+    def get_currency_symbol(self):
+        """
+        Get currency symbol for display
+        """
+        symbol_map = {
+            'kenya': 'KSh',
+            'uganda': 'USh',
+            'zambia': 'ZK',
+            'south_africa': 'R',
+        }
+        return symbol_map.get(self.country, '$')
+    
+    def get_formatted_amount(self):
+        """
+        Get amount with currency symbol
+        """
+        return f"{self.get_currency_symbol()} {self.amount:,.2f}"
 
 
 class BookingCommand(models.Model):

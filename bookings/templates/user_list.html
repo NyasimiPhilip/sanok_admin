@@ -85,6 +85,7 @@
 <!-- Users Table -->
 <div class="card">
     {% if users %}
+    <div class="table-wrapper">
     <table class="table">
         <thead>
             <tr>
@@ -140,10 +141,11 @@
             {% endfor %}
         </tbody>
     </table>
+    </div><!-- /table-wrapper -->
     
     <!-- Pagination -->
     {% if is_paginated %}
-    <div style="display: flex; justify-content: center; align-items: center; gap: 1rem; margin-top: 2rem; padding-top: 2rem; border-top: 1px solid #dee2e6;">
+    <div style="display: flex; justify-content: center; align-items: center; gap: 1rem; margin-top: 2rem; padding-top: 2rem; border-top: 1px solid #dee2e6; flex-wrap: wrap;">
         {% if page_obj.has_previous %}
         <a href="?page=1" class="btn btn-secondary">First</a>
         <a href="?page={{ page_obj.previous_page_number }}" class="btn btn-secondary">Previous</a>

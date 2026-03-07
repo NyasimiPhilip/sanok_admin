@@ -75,6 +75,7 @@
 <!-- Orders Table -->
 <div class="card">
     {% if bookings %}
+    <div class="table-wrapper">
     <table class="table">
         <thead>
             <tr>
@@ -128,10 +129,11 @@
             {% endfor %}
         </tbody>
     </table>
+    </div><!-- /table-wrapper -->
     
     <!-- Pagination -->
     {% if is_paginated %}
-    <div style="display: flex; justify-content: center; align-items: center; gap: 1rem; margin-top: 2rem; padding-top: 2rem; border-top: 1px solid #dee2e6;">
+    <div style="display: flex; justify-content: center; align-items: center; gap: 1rem; margin-top: 2rem; padding-top: 2rem; border-top: 1px solid #dee2e6; flex-wrap: wrap;">
         {% if page_obj.has_previous %}
         <a href="?page=1{% if request.GET.status %}&status={{ request.GET.status }}{% endif %}{% if request.GET.country %}&country={{ request.GET.country }}{% endif %}" class="btn btn-secondary">First</a>
         <a href="?page={{ page_obj.previous_page_number }}{% if request.GET.status %}&status={{ request.GET.status }}{% endif %}{% if request.GET.country %}&country={{ request.GET.country }}{% endif %}" class="btn btn-secondary">Previous</a>

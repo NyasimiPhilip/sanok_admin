@@ -23,13 +23,6 @@ def login_view(request):
         user = authenticate(request, username=username, password=password)
         
         if user is not None:
-            # Check if technician is accessing within allowed hours
-            if hasattr(user, 'role') and user.role == 'technician':
-                current_hour = timezone.now().hour
-                if not (5 <= current_hour < 12):
-                    messages.error(request, 'Technicians can only access the system between 5:00 AM and 12:00 PM')
-                    return render(request, 'login.html')
-            
             auth_login(request, user)
             messages.success(request, f'Welcome back, {user.get_full_name() or user.username}!')
             return redirect('dashboard')
@@ -73,9 +66,9 @@ def dashboard_view(request):
             order_time__lte=end_of_day
         )
     else:
-        # Admins and super admins see orders up to 2 weeks ahead
-        two_weeks_ahead = timezone.now() + timedelta(weeks=2)
-        bookings = Booking.objects.filter(order_time__lte=two_weeks_ahead)
+        # Admins and super admins see all orders (up to 2 years ahead)
+        two_years_ahead = timezone.now() + timedelta(days=730)
+        bookings = Booking.objects.filter(order_time__lte=two_years_ahead)
     
     # Calculate statistics
     completed_bookings = bookings.filter(status='completed')
@@ -118,9 +111,9 @@ def booking_list_view(request):
     
     # Get bookings based on user role and time restrictions
     if hasattr(user, 'role') and user.role == 'technician':
-        # Technicians see only their assigned orders from 5 AM of current day
+        # Technicians see only their assigned orders for current day (midnight to midnight)
         today = timezone.now().date()
-        start_of_day = timezone.make_aware(datetime.combine(today, time(5, 0)))  # 5:00 AM today
+        start_of_day = timezone.make_aware(datetime.combine(today, time(0, 0)))  # Midnight today
         end_of_day = timezone.make_aware(datetime.combine(today, time(23, 59, 59)))
         bookings = Booking.objects.filter(
             assigned_technician=user,
@@ -128,9 +121,9 @@ def booking_list_view(request):
             order_time__lte=end_of_day
         )
     else:
-        # Admins and super admins see orders up to 2 weeks ahead
-        two_weeks_ahead = timezone.now() + timedelta(weeks=2)
-        bookings = Booking.objects.filter(order_time__lte=two_weeks_ahead)
+        # Admins and super admins see all orders (up to 2 years ahead)
+        two_years_ahead = timezone.now() + timedelta(days=730)
+        bookings = Booking.objects.filter(order_time__lte=two_years_ahead)
     
     # Apply filters
     status_filter = request.GET.get('status')

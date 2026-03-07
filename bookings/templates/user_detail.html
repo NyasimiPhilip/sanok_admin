@@ -204,6 +204,7 @@
 {% if view_user.role == 'technician' and recent_orders %}
 <div class="card" style="margin-top: 2rem;">
     <h2 style="margin-bottom: 1.5rem; color: #93c1db;">📋 Recent Orders</h2>
+    <div class="table-wrapper">
     <table class="table">
         <thead>
             <tr>
@@ -236,6 +237,7 @@
             {% endfor %}
         </tbody>
     </table>
+    </div><!-- /table-wrapper -->
 </div>
 {% endif %}
 {% endblock %}
