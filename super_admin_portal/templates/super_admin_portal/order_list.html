@@ -1,0 +1,77 @@
+{% extends 'super_admin_portal/base.html' %}
+{% block title %}Orders{% endblock %}
+
+{% block content %}
+<div class="d-flex justify-content-between align-items-center mb-3">
+    <h3>All Orders</h3>
+</div>
+
+<div class="card mb-3">
+    <div class="card-body">
+        <form method="get" class="row g-2">
+            <div class="col-md-3">
+                <select name="status" class="form-select form-select-sm">
+                    <option value="">All Statuses</option>
+                    <option value="pending" {% if request.GET.status == 'pending' %}selected{% endif %}>Pending</option>
+                    <option value="assigned" {% if request.GET.status == 'assigned' %}selected{% endif %}>Assigned</option>
+                    <option value="in_progress" {% if request.GET.status == 'in_progress' %}selected{% endif %}>In Progress</option>
+                    <option value="completed" {% if request.GET.status == 'completed' %}selected{% endif %}>Completed</option>
+                </select>
+            </div>
+            <div class="col-md-5">
+                <input type="text" name="search" class="form-control form-control-sm"
+                       value="{{ request.GET.search }}" placeholder="Order #, phone, address">
+            </div>
+            <div class="col-md-2">
+                <button type="submit" class="btn btn-primary btn-sm w-100">Filter</button>
+            </div>
+        </form>
+    </div>
+</div>
+
+<div class="card">
+    <div class="card-body p-0">
+        <div class="table-responsive">
+            <table class="table table-hover mb-0">
+                <thead class="table-primary">
+                    <tr>
+                        <th>Order #</th>
+                        <th>Scheduled</th>
+                        <th>Country</th>
+                        <th>Phone</th>
+                        <th>Pest</th>
+                        <th>Status</th>
+                        <th>Technician</th>
+                        <th>Complaint</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for order in orders %}
+                    <tr>
+                        <td><strong>{{ order.order_number }}</strong></td>
+                        <td>{{ order.order_time|date:"d M Y H:i" }}</td>
+                        <td>{{ order.get_country_display }}</td>
+                        <td>{{ order.client_phone }}</td>
+                        <td>{{ order.get_pest_type_display }}</td>
+                        <td>
+                            <span class="badge
+                                {% if order.status == 'pending' %}bg-warning text-dark
+                                {% elif order.status == 'assigned' %}bg-info
+                                {% elif order.status == 'in_progress' %}bg-primary
+                                {% elif order.status == 'completed' %}bg-success
+                                {% else %}bg-secondary{% endif %}">
+                                {{ order.get_status_display }}
+                            </span>
+                        </td>
+                        <td>{{ order.assigned_technician.get_full_name|default:'-' }}</td>
+                        <td>{% if order.has_complaint %}<span class="badge bg-warning text-dark">Yes</span>{% else %}-{% endif %}</td>
+                    </tr>
+                    {% empty %}
+                    <tr><td colspan="8" class="text-center text-muted">No orders found.</td></tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+{% endblock %}

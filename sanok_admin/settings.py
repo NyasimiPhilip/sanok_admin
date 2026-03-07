@@ -39,7 +39,10 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
-    'bookings',  # Booking system app
+    'bookings',            # Booking system app
+    'technician_portal',   # Technician-facing app
+    'admin_portal',        # Admin-facing app
+    'super_admin_portal',  # Super Admin app
 ]
 
 MIDDLEWARE = [
@@ -148,7 +151,7 @@ DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
 # Login/Logout URLs
 LOGIN_URL = '/login/'
-LOGIN_REDIRECT_URL = '/dashboard/'
+LOGIN_REDIRECT_URL = '/login/'   # overridden by role-based redirect in login view
 LOGOUT_REDIRECT_URL = '/login/'
 
 # Production Security Settings

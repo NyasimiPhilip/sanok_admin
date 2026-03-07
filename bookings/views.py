@@ -13,23 +13,37 @@ from datetime import datetime
 # ============ Authentication Views ============
 
 def login_view(request):
-    """Login page"""
+    """Login page — redirects to the correct portal after authentication."""
     if request.user.is_authenticated:
-        return redirect('dashboard')
-    
+        return _redirect_by_role(request.user)
+
     if request.method == 'POST':
         username = request.POST.get('username')
         password = request.POST.get('password')
         user = authenticate(request, username=username, password=password)
-        
+
         if user is not None:
             auth_login(request, user)
-            messages.success(request, f'Welcome back, {user.get_full_name() or user.username}!')
-            return redirect('dashboard')
+            messages.success(request, f'Welcome, {user.get_full_name() or user.username}!')
+            return _redirect_by_role(user)
         else:
-            messages.error(request, 'Invalid username or password')
-    
+            messages.error(request, 'Invalid username or password.')
+
     return render(request, 'login.html')
+
+
+def _redirect_by_role(user):
+    """Return the correct HttpResponseRedirect based on user role."""
+    from django.shortcuts import redirect as _redirect
+    role = getattr(user, 'role', None)
+    if role == 'super_admin':
+        return _redirect('super_admin:dashboard')
+    elif role == 'admin':
+        return _redirect('admin_portal:dashboard')
+    elif role == 'technician':
+        return _redirect('technician:orders')
+    # fallback for Django superusers without a role
+    return _redirect('/admin/')
 
 
 @login_required
