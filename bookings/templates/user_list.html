@@ -3,35 +3,38 @@
 {% block title %}Users - Sanok Fumigation{% endblock %}
 
 {% block content %}
-<div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 2rem;">
-    <h1 style="color: white; text-shadow: 2px 2px 4px rgba(0,0,0,0.2);">👥 User Management</h1>
+<div style="border-bottom: 3px solid #93c1db; padding-bottom: 1rem; margin-bottom: 2rem; display: flex; justify-content: space-between; align-items: center;">
+    <div>
+        <h1 style="color: #2c3e50; margin: 0; font-weight: 600; font-size: 1.75rem;">User Management</h1>
+        <p style="color: #6c757d; margin-top: 0.5rem; font-size: 0.95rem;">Manage system users and permissions</p>
+    </div>
     {% if user.is_super_admin or user.is_admin %}
-    <a href="{% url 'user_create' %}" class="btn btn-success">+ Add User</a>
+    <a href="{% url 'user_create' %}" class="btn btn-primary">+ Add User</a>
     {% endif %}
 </div>
 
 <!-- Role Stats -->
 <div class="stats-grid" style="margin-bottom: 2rem;">
     {% if user.is_super_admin %}
-    <div class="stat-card" style="background: #93c1db; color: white;">
-        <h3 style="color: rgba(255,255,255,0.9);">Super Admins</h3>
-        <div class="value">{{ user_stats.super_admins }}</div>
+    <div class="stat-card" style="background: white; border: 1px solid #e0e0e0; border-left: 4px solid #93c1db;">
+        <h3 style="color: #6c757d; font-size: 0.875rem; font-weight: 500;">Super Admins</h3>
+        <div class="value" style="color: #2c3e50;">{{ user_stats.super_admins }}</div>
     </div>
     {% endif %}
     
-    <div class="stat-card" style="background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%); color: white;">
-        <h3 style="color: rgba(255,255,255,0.9);">Admins</h3>
-        <div class="value">{{ user_stats.admins }}</div>
+    <div class="stat-card" style="background: white; border: 1px solid #e0e0e0; border-left: 4px solid #7ab0cd;">
+        <h3 style="color: #6c757d; font-size: 0.875rem; font-weight: 500;">Administrators</h3>
+        <div class="value" style="color: #2c3e50;">{{ user_stats.admins }}</div>
     </div>
     
-    <div class="stat-card" style="background: linear-gradient(135deg, #4facfe 0%, #00f2fe 100%); color: white;">
-        <h3 style="color: rgba(255,255,255,0.9);">Technicians</h3>
-        <div class="value">{{ user_stats.technicians }}</div>
+    <div class="stat-card" style="background: white; border: 1px solid #e0e0e0; border-left: 4px solid #b3d9e8;">
+        <h3 style="color: #6c757d; font-size: 0.875rem; font-weight: 500;">Technicians</h3>
+        <div class="value" style="color: #2c3e50;">{{ user_stats.technicians }}</div>
     </div>
     
-    <div class="stat-card" style="background: linear-gradient(135deg, #43e97b 0%, #38f9d7 100%); color: white;">
-        <h3 style="color: rgba(255,255,255,0.9);">Active Users</h3>
-        <div class="value">{{ user_stats.active_users }}</div>
+    <div class="stat-card" style="background: white; border: 1px solid #e0e0e0; border-left: 4px solid #4caf50;">
+        <h3 style="color: #6c757d; font-size: 0.875rem; font-weight: 500;">Active Users</h3>
+        <div class="value" style="color: #2c3e50;">{{ user_stats.active_users }}</div>
     </div>
 </div>
 

@@ -3,10 +3,13 @@
 {% block title %}Orders - Sanok Fumigation{% endblock %}
 
 {% block content %}
-<div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 2rem;">
-    <h1 style="color: white; text-shadow: 2px 2px 4px rgba(0,0,0,0.2);">📋 Orders</h1>
+<div style="border-bottom: 3px solid #93c1db; padding-bottom: 1rem; margin-bottom: 2rem; display: flex; justify-content: space-between; align-items: center;">
+    <div>
+        <h1 style="color: #2c3e50; margin: 0; font-weight: 600; font-size: 1.75rem;">Orders</h1>
+        <p style="color: #6c757d; margin-top: 0.5rem; font-size: 0.95rem;">Manage all fumigation service orders</p>
+    </div>
     {% if user.is_super_admin or user.is_admin %}
-    <a href="{% url 'booking_create' %}" class="btn btn-success">+ New Order</a>
+    <a href="{% url 'booking_create' %}" class="btn btn-primary">+ New Order</a>
     {% endif %}
 </div>
 

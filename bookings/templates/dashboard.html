@@ -3,72 +3,73 @@
 {% block title %}Dashboard - Sanok Fumigation{% endblock %}
 
 {% block content %}
-<h1 style="color: white; margin-bottom: 2rem; text-shadow: 2px 2px 4px rgba(0,0,0,0.2);">
-    📊 Dashboard
-</h1>
+<div style="border-bottom: 3px solid #93c1db; padding-bottom: 1rem; margin-bottom: 2rem;">
+    <h1 style="color: #2c3e50; margin: 0; font-weight: 600; font-size: 1.75rem;">Dashboard</h1>
+    <p style="color: #6c757d; margin-top: 0.5rem; font-size: 0.95rem;">System Overview and Management</p>
+</div>
 
 {% if user.is_super_admin %}
-<div class="card" style="background: #93c1db; color: white; margin-bottom: 2rem;">
-    <h2 style="color: white; margin-bottom: 1rem;">🔑 Super Admin Panel</h2>
-    <p>You have full system access and can manage administrators and technicians.</p>
+<div class="card" style="border-left: 4px solid #93c1db; margin-bottom: 2rem;">
+    <h2 style="color: #2c3e50; margin-bottom: 1rem; font-size: 1.25rem; font-weight: 600;">Super Administrator Panel</h2>
+    <p style="color: #6c757d; line-height: 1.6;">Full system access granted. Manage administrators and technicians across all regions.</p>
     <div style="margin-top: 1.5rem; display: flex; gap: 1rem;">
-        <a href="{% url 'user_list' %}" class="btn btn-secondary">Manage Users</a>
-        <a href="{% url 'booking_create' %}" class="btn btn-success">Create New Order</a>
+        <a href="{% url 'user_list' %}" class="btn btn-primary">Manage Users</a>
+        <a href="{% url 'booking_create' %}" class="btn btn-primary">Create New Order</a>
     </div>
 </div>
 {% elif user.is_admin %}
-<div class="card" style="background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%); color: white; margin-bottom: 2rem;">
-    <h2 style="color: white; margin-bottom: 1rem;">👨‍💼 Admin Panel</h2>
-    <p>You can create orders 24/7 and manage technicians in your region.</p>
+<div class="card" style="border-left: 4px solid #93c1db; margin-bottom: 2rem;">
+    <h2 style="color: #2c3e50; margin-bottom: 1rem; font-size: 1.25rem; font-weight: 600;">Administrator Panel</h2>
+    <p style="color: #6c757d; line-height: 1.6;">Create and manage orders. Assign tasks to technicians in your region.</p>
     <div style="margin-top: 1.5rem; display: flex; gap: 1rem;">
-        <a href="{% url 'user_list' %}" class="btn btn-secondary">Manage Technicians</a>
-        <a href="{% url 'booking_create' %}" class="btn btn-success">Create New Order</a>
+        <a href="{% url 'user_list' %}" class="btn btn-primary">Manage Technicians</a>
+        <a href="{% url 'booking_create' %}" class="btn btn-primary">Create New Order</a>
     </div>
 </div>
 {% else %}
-<div class="card" style="background: linear-gradient(135deg, #4facfe 0%, #00f2fe 100%); color: white; margin-bottom: 2rem;">
-    <h2 style="color: white; margin-bottom: 1rem;">🔧 Technician Panel</h2>
-    <p>View and manage your assigned orders. Access available 5:00 AM - 12:00 PM.</p>
+<div class="card" style="border-left: 4px solid #93c1db; margin-bottom: 2rem;">
+    <h2 style="color: #2c3e50; margin-bottom: 1rem; font-size: 1.25rem; font-weight: 600;">Technician Panel</h2>
+    <p style="color: #6c757d; line-height: 1.6;">View and manage your assigned orders for today.</p>
     <div style="margin-top: 1.5rem;">
-        <a href="{% url 'booking_list' %}" class="btn btn-secondary">View My Orders</a>
+        <a href="{% url 'booking_list' %}" class="btn btn-primary">View My Orders</a>
     </div>
 </div>
 {% endif %}
 
 <!-- Statistics Cards -->
 <div class="stats-grid">
-    <div class="stat-card" style="background: linear-gradient(135deg, #28a745 0%, #20c997 100%); color: white;">
-        <h3 style="color: rgba(255,255,255,0.9);">Completed</h3>
-        <div class="value">{{ stats.completed_orders }}</div>
+    <div class="stat-card" style="background: white; border: 1px solid #e0e0e0; border-left: 4px solid #4caf50;">
+        <h3 style="color: #6c757d; font-size: 0.875rem; font-weight: 500;">Completed Orders</h3>
+        <div class="value" style="color: #2c3e50;">{{ stats.completed_orders }}</div>
     </div>
     
-    <div class="stat-card" style="background: linear-gradient(135deg, #dc3545 0%, #bd2130 100%); color: white;">
-        <h3 style="color: rgba(255,255,255,0.9);">⚠️ With Complaints</h3>
-        <div class="value">{{ stats.orders_with_complaints }}</div>
+    <div class="stat-card" style="background: white; border: 1px solid #e0e0e0; border-left: 4px solid #f44336;">
+        <h3 style="color: #6c757d; font-size: 0.875rem; font-weight: 500;">With Complaints</h3>
+        <div class="value" style="color: #2c3e50;">{{ stats.orders_with_complaints }}</div>
     </div>
     
-    <div class="stat-card" style="background: linear-gradient(135deg, #28a745 0%, #155724 100%); color: white;">
-        <h3 style="color: rgba(255,255,255,0.9);">✅ No Complaints</h3>
-        <div class="value">{{ stats.orders_no_complaints }}</div>
+    <div class="stat-card" style="background: white; border: 1px solid #e0e0e0; border-left: 4px solid #93c1db;">
+        <h3 style="color: #6c757d; font-size: 0.875rem; font-weight: 500;">No Complaints</h3>
+        <div class="value" style="color: #2c3e50;">{{ stats.orders_no_complaints }}</div>
     </div>
 </div>
 
 <!-- Orders by Country -->
 {% if user.is_super_admin or user.is_admin %}
 <div class="card">
-    <h2 style="margin-bottom: 1.5rem;">Orders by Country</h2>
+    <h2 style="margin-bottom: 1.5rem; color: #2c3e50; font-size: 1.25rem; font-weight: 600;">Orders by Country</h2>
     <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 1.5rem;">
         {% for country_stat in stats.country_stats %}
-        <div style="text-align: center; padding: 1.5rem; background: #f8f9fa; border-radius: 8px;">
-            <div style="font-size: 3rem; margin-bottom: 0.5rem;">
-                {% if country_stat.country == 'kenya' %}🇰🇪
-                {% elif country_stat.country == 'uganda' %}🇺🇬
-                {% elif country_stat.country == 'zambia' %}🇿🇲
-                {% elif country_stat.country == 'south_africa' %}🇿🇦
+        <div style="text-align: center; padding: 1.5rem; background: #f8f9fa; border: 1px solid #e0e0e0; border-radius: 4px;">
+            <div style="font-size: 2rem; font-weight: 600; margin-bottom: 0.5rem; color: #2c3e50;">{{ country_stat.count }}</div>
+            <div style="text-transform: capitalize; color: #6c757d; font-size: 0.875rem;">{{ country_stat.country|title }}</div>
+            <div style="font-size: 0.75rem; color: #93c1db; margin-top: 0.25rem;">
+                {% if country_stat.country == 'kenya' %}KE
+                {% elif country_stat.country == 'uganda' %}UG
+                {% elif country_stat.country == 'zambia' %}ZM
+                {% elif country_stat.country == 'south_africa' %}ZA
                 {% endif %}
             </div>
-            <div style="font-size: 2rem; font-weight: bold; margin-bottom: 0.5rem;">{{ country_stat.count }}</div>
-            <div style="text-transform: capitalize; color: #6c757d;">{{ country_stat.country|title }}</div>
         </div>
         {% endfor %}
     </div>
@@ -77,7 +78,7 @@
 
 <!-- Recent Orders -->
 <div class="card">
-    <h2 style="margin-bottom: 1.5rem;">Recent Orders</h2>
+    <h2 style="margin-bottom: 1.5rem; color: #2c3e50; font-size: 1.25rem; font-weight: 600;">Recent Orders</h2>
     {% if recent_orders %}
     <div class="table-wrapper">
     <table class="table">
@@ -132,15 +133,15 @@
 
 {% if user.is_technician %}
 <!-- Today's Schedule for Technicians -->
-<div class="card" style="background: #fff3cd; border: 2px solid #ffc107;">
-    <h3 style="color: #856404; margin-bottom: 1rem;">📅 Today's Schedule</h3>
-    <p style="color: #856404; margin-bottom: 1rem;">Orders assigned to you for today:</p>
+<div class="card" style="background: #f8f9fa; border-left: 4px solid #93c1db;">
+    <h3 style="color: #2c3e50; margin-bottom: 1rem; font-size: 1.25rem; font-weight: 600;">Today's Schedule</h3>
+    <p style="color: #6c757d; margin-bottom: 1rem; font-size: 0.95rem;">Orders assigned to you for today:</p>
     {% if today_orders %}
     <ul style="list-style: none; padding: 0;">
         {% for order in today_orders %}
-        <li style="padding: 0.75rem; background: white; margin-bottom: 0.5rem; border-radius: 6px; display: flex; justify-content: space-between; align-items: center;">
+        <li style="padding: 0.75rem; background: white; margin-bottom: 0.5rem; border: 1px solid #e0e0e0; border-radius: 4px; display: flex; justify-content: space-between; align-items: center;">
             <div>
-                <strong>{{ order.order_time|date:"H:i" }}</strong> - {{ order.location_address|truncatechars:50 }}
+                <strong style="color: #2c3e50;">{{ order.order_time|date:"H:i" }}</strong> - <span style="color: #495057;">{{ order.location_address|truncatechars:50 }}</span>
                 <br>
                 <small style="color: #6c757d;">{{ order.get_pest_type_display }} | {{ order.client_phone }}</small>
             </div>
@@ -149,7 +150,7 @@
         {% endfor %}
     </ul>
     {% else %}
-    <p style="color: #856404;">No orders scheduled for today.</p>
+    <p style="color: #6c757d;">No orders scheduled for today.</p>
     {% endif %}
 </div>
 {% endif %}
