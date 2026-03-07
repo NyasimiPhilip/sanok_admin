@@ -31,7 +31,6 @@ python manage.py collectstatic --noinput
 
 # 3. Set proper permissions
 echo "🔒 Setting permissions..."
-chown -R www-data:www-data /root/sanok_admin
 chmod -R 755 /root/sanok_admin
 
 # 4. Create Gunicorn systemd service
@@ -42,8 +41,8 @@ Description=Sanok Admin Gunicorn daemon
 After=network.target
 
 [Service]
-User=www-data
-Group=www-data
+User=root
+Group=root
 WorkingDirectory=/root/sanok_admin
 Environment="PATH=/root/sanok_admin/venv/bin"
 EnvironmentFile=/root/sanok_admin/.env

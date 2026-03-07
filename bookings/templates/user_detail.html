@@ -13,7 +13,7 @@
 <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(400px, 1fr)); gap: 2rem;">
     <!-- User Details -->
     <div class="card">
-        <h2 style="margin-bottom: 1.5rem; color: #667eea;">👤 Profile Information</h2>
+        <h2 style="margin-bottom: 1.5rem; color: #93c1db;">👤 Profile Information</h2>
         
         <div style="margin-bottom: 1rem;">
             <strong>Full Name:</strong>
@@ -84,11 +84,11 @@
     <!-- Statistics (for technicians) -->
     {% if view_user.role == 'technician' %}
     <div class="card">
-        <h2 style="margin-bottom: 1.5rem; color: #667eea;">📊 Work Statistics</h2>
+        <h2 style="margin-bottom: 1.5rem; color: #93c1db;">📊 Work Statistics</h2>
         
         <div style="margin-bottom: 1rem;">
             <strong>Total Assigned Orders:</strong>
-            <div style="font-size: 2rem; font-weight: bold; color: #667eea; margin-top: 0.25rem;">
+            <div style="font-size: 2rem; font-weight: bold; color: #93c1db; margin-top: 0.25rem;">
                 {{ stats.total_orders }}
             </div>
         </div>
@@ -125,7 +125,7 @@
     
     <!-- Access Information -->
     <div class="card">
-        <h2 style="margin-bottom: 1.5rem; color: #667eea;">🔐 Access Information</h2>
+        <h2 style="margin-bottom: 1.5rem; color: #93c1db;">🔐 Access Information</h2>
         
         {% if view_user.role == 'technician' %}
         <div style="background: #fff3cd; padding: 1.5rem; border-radius: 8px; border: 2px solid #ffc107; margin-bottom: 1rem;">
@@ -175,7 +175,7 @@
 <!-- Actions -->
 {% if user.is_super_admin or (user.is_admin and view_user.role == 'technician') %}
 <div class="card" style="margin-top: 2rem;">
-    <h2 style="margin-bottom: 1.5rem; color: #667eea;">⚡ Actions</h2>
+    <h2 style="margin-bottom: 1.5rem; color: #93c1db;">⚡ Actions</h2>
     <div style="display: flex; gap: 1rem; flex-wrap: wrap;">
         <a href="{% url 'user_edit' view_user.pk %}" class="btn btn-primary">Edit User</a>
         
@@ -203,7 +203,7 @@
 <!-- Recent Orders (for technicians) -->
 {% if view_user.role == 'technician' and recent_orders %}
 <div class="card" style="margin-top: 2rem;">
-    <h2 style="margin-bottom: 1.5rem; color: #667eea;">📋 Recent Orders</h2>
+    <h2 style="margin-bottom: 1.5rem; color: #93c1db;">📋 Recent Orders</h2>
     <table class="table">
         <thead>
             <tr>

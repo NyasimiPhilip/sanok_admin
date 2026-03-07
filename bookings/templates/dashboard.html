@@ -8,7 +8,7 @@
 </h1>
 
 {% if user.is_super_admin %}
-<div class="card" style="background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); color: white; margin-bottom: 2rem;">
+<div class="card" style="background: linear-gradient(135deg, #93c1db 0%, #764ba2 100%); color: white; margin-bottom: 2rem;">
     <h2 style="color: white; margin-bottom: 1rem;">🔑 Super Admin Panel</h2>
     <p>You have full system access and can manage administrators and technicians.</p>
     <div style="margin-top: 1.5rem; display: flex; gap: 1rem;">
@@ -37,26 +37,6 @@
 
 <!-- Statistics Cards -->
 <div class="stats-grid">
-    <div class="stat-card" style="background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); color: white;">
-        <h3 style="color: rgba(255,255,255,0.9);">Total Orders</h3>
-        <div class="value">{{ stats.total_orders }}</div>
-    </div>
-    
-    <div class="stat-card" style="background: linear-gradient(135deg, #ffc107 0%, #ff9800 100%); color: white;">
-        <h3 style="color: rgba(255,255,255,0.9);">Pending</h3>
-        <div class="value">{{ stats.pending_orders }}</div>
-    </div>
-    
-    <div class="stat-card" style="background: linear-gradient(135deg, #17a2b8 0%, #0056b3 100%); color: white;">
-        <h3 style="color: rgba(255,255,255,0.9);">Assigned</h3>
-        <div class="value">{{ stats.assigned_orders }}</div>
-    </div>
-    
-    <div class="stat-card" style="background: linear-gradient(135deg, #007bff 0%, #0056b3 100%); color: white;">
-        <h3 style="color: rgba(255,255,255,0.9);">In Progress</h3>
-        <div class="value">{{ stats.in_progress_orders }}</div>
-    </div>
-    
     <div class="stat-card" style="background: linear-gradient(135deg, #28a745 0%, #20c997 100%); color: white;">
         <h3 style="color: rgba(255,255,255,0.9);">Completed</h3>
         <div class="value">{{ stats.completed_orders }}</div>
@@ -70,11 +50,6 @@
     <div class="stat-card" style="background: linear-gradient(135deg, #28a745 0%, #155724 100%); color: white;">
         <h3 style="color: rgba(255,255,255,0.9);">✅ No Complaints</h3>
         <div class="value">{{ stats.orders_no_complaints }}</div>
-    </div>
-    
-    <div class="stat-card" style="background: linear-gradient(135deg, #6c3483 0%, #155724 100%); color: white;">
-        <h3 style="color: rgba(255,255,255,0.9);">Total Revenue</h3>
-        <div class="value" style="font-size: 2rem;">${{ stats.total_revenue|floatformat:2 }}</div>
     </div>
 </div>
 

@@ -59,12 +59,23 @@ def home_view(request):
 def dashboard_view(request):
     """Dashboard with statistics"""
     user = request.user
+    from datetime import datetime, time, timedelta
     
-    # Get bookings based on user role
+    # Get bookings based on user role and time restrictions
     if hasattr(user, 'role') and user.role == 'technician':
-        bookings = Booking.objects.filter(assigned_technician=user)
+        # Technicians see only their assigned orders from 5 AM of current day
+        today = timezone.now().date()
+        start_of_day = timezone.make_aware(datetime.combine(today, time(5, 0)))  # 5:00 AM today
+        end_of_day = timezone.make_aware(datetime.combine(today, time(23, 59, 59)))
+        bookings = Booking.objects.filter(
+            assigned_technician=user,
+            order_time__gte=start_of_day,
+            order_time__lte=end_of_day
+        )
     else:
-        bookings = Booking.objects.all()
+        # Admins and super admins see orders up to 2 weeks ahead
+        two_weeks_ahead = timezone.now() + timedelta(weeks=2)
+        bookings = Booking.objects.filter(order_time__lte=two_weeks_ahead)
     
     # Calculate statistics
     completed_bookings = bookings.filter(status='completed')
@@ -80,14 +91,13 @@ def dashboard_view(request):
         'country_stats': bookings.values('country').annotate(count=Count('id')).order_by('-count'),
     }
     
-    # Recent orders
-    recent_orders = bookings.order_by('-created_at')[:10]
+    # Recent orders (filtered by time restrictions)
+    recent_orders = bookings.order_by('-order_time')[:10]
     
     # Today's orders for technicians
     today_orders = None
     if user.role == 'technician':
-        today = timezone.now().date()
-        today_orders = bookings.filter(order_time__date=today).order_by('order_time')
+        today_orders = bookings.order_by('order_time')
     
     context = {
         'stats': stats,
@@ -104,12 +114,23 @@ def dashboard_view(request):
 def booking_list_view(request):
     """List all bookings with filtering"""
     user = request.user
+    from datetime import datetime, time, timedelta
     
-    # Get bookings based on user role
+    # Get bookings based on user role and time restrictions
     if hasattr(user, 'role') and user.role == 'technician':
-        bookings = Booking.objects.filter(assigned_technician=user)
+        # Technicians see only their assigned orders from 5 AM of current day
+        today = timezone.now().date()
+        start_of_day = timezone.make_aware(datetime.combine(today, time(5, 0)))  # 5:00 AM today
+        end_of_day = timezone.make_aware(datetime.combine(today, time(23, 59, 59)))
+        bookings = Booking.objects.filter(
+            assigned_technician=user,
+            order_time__gte=start_of_day,
+            order_time__lte=end_of_day
+        )
     else:
-        bookings = Booking.objects.all()
+        # Admins and super admins see orders up to 2 weeks ahead
+        two_weeks_ahead = timezone.now() + timedelta(weeks=2)
+        bookings = Booking.objects.filter(order_time__lte=two_weeks_ahead)
     
     # Apply filters
     status_filter = request.GET.get('status')

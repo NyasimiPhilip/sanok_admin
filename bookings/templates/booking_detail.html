@@ -31,11 +31,11 @@
 <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(400px, 1fr)); gap: 2rem;">
     <!-- Order Details -->
     <div class="card">
-        <h2 style="margin-bottom: 1.5rem; color: #667eea;">📋 Order Information</h2>
+        <h2 style="margin-bottom: 1.5rem; color: #93c1db;">📋 Order Information</h2>
         
         <div style="margin-bottom: 1rem;">
             <strong>Order Number:</strong>
-            <div style="font-size: 1.2rem; color: #667eea; margin-top: 0.25rem;">{{ booking.order_number }}</div>
+            <div style="font-size: 1.2rem; color: #93c1db; margin-top: 0.25rem;">{{ booking.order_number }}</div>
         </div>
         
         <div style="margin-bottom: 1rem;">
@@ -86,12 +86,12 @@
     
     <!-- Location & Contact -->
     <div class="card">
-        <h2 style="margin-bottom: 1.5rem; color: #667eea;">📍 Location & Contact</h2>
+        <h2 style="margin-bottom: 1.5rem; color: #93c1db;">📍 Location & Contact</h2>
         
         <div style="margin-bottom: 1rem;">
             <strong>Location Pin:</strong>
             <div style="margin-top: 0.25rem;">
-                <a href="{{ booking.location_pin }}" target="_blank" style="color: #667eea; word-break: break-all;">
+                <a href="{{ booking.location_pin }}" target="_blank" style="color: #93c1db; word-break: break-all;">
                     {{ booking.location_pin }}
                 </a>
             </div>
@@ -105,7 +105,7 @@
         <div style="margin-bottom: 1rem;">
             <strong>Client Phone:</strong>
             <div style="margin-top: 0.25rem; font-size: 1.2rem;">
-                <a href="tel:{{ booking.client_phone }}" style="color: #667eea; text-decoration: none;">
+                <a href="tel:{{ booking.client_phone }}" style="color: #93c1db; text-decoration: none;">
                     📞 {{ booking.client_phone }}
                 </a>
             </div>
@@ -123,7 +123,7 @@
     
     <!-- Assignment & Technician -->
     <div class="card">
-        <h2 style="margin-bottom: 1.5rem; color: #667eea;">👨‍🔧 Assignment</h2>
+        <h2 style="margin-bottom: 1.5rem; color: #93c1db;">👨‍🔧 Assignment</h2>
         
         {% if booking.assigned_technician %}
         <div style="margin-bottom: 1rem;">
@@ -157,7 +157,7 @@
     
     <!-- Complaint Status -->
     <div class="card">
-        <h2 style="margin-bottom: 1.5rem; color: #667eea;">💬 Complaint Status</h2>
+        <h2 style="margin-bottom: 1.5rem; color: #93c1db;">💬 Complaint Status</h2>
         
         {% if booking.has_complaint %}
         <div style="background: #f8d7da; padding: 1.5rem; border-radius: 8px; border: 2px solid #dc3545;">
@@ -186,7 +186,7 @@
 <!-- Actions -->
 {% if user.is_super_admin or user.is_admin or booking.assigned_technician == user %}
 <div class="card" style="margin-top: 2rem;">
-    <h2 style="margin-bottom: 1.5rem; color: #667eea;">⚡ Actions</h2>
+    <h2 style="margin-bottom: 1.5rem; color: #93c1db;">⚡ Actions</h2>
     <div style="display: flex; gap: 1rem; flex-wrap: wrap;">
         {% if user.is_super_admin or user.is_admin %}
         <a href="{% url 'booking_edit' booking.pk %}" class="btn btn-primary">Edit Order</a>
@@ -250,11 +250,11 @@
 <!-- Instructions/Commands -->
 {% if booking.commands.all %}
 <div class="card" style="margin-top: 2rem;">
-    <h2 style="margin-bottom: 1.5rem; color: #667eea;">📝 Instructions & Commands</h2>
+    <h2 style="margin-bottom: 1.5rem; color: #93c1db;">📝 Instructions & Commands</h2>
     {% for command in booking.commands.all %}
-    <div style="background: #f8f9fa; padding: 1rem; border-radius: 8px; margin-bottom: 1rem; border-left: 4px solid #667eea;">
+    <div style="background: #f8f9fa; padding: 1rem; border-radius: 8px; margin-bottom: 1rem; border-left: 4px solid #93c1db;">
         <div style="display: flex; justify-content: space-between; align-items: start; margin-bottom: 0.5rem;">
-            <strong style="text-transform: uppercase; color: #667eea; font-size: 0.85rem;">
+            <strong style="text-transform: uppercase; color: #93c1db; font-size: 0.85rem;">
                 {{ command.get_instruction_type_display }}
             </strong>
             <span style="font-size: 0.85rem; color: #6c757d;">
