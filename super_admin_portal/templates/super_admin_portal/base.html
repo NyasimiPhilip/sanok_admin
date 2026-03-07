@@ -1,6 +1,14 @@
 {% extends "admin/base_site.html" %}
 
-{% block title %}{% block portal_title %}Super Admin{% endblock %} | Sanok Fumigation{% endblock %}
+{% block title %}{% block portal_title %}Super Admin{% endblock %} | Sanok Order Management System{% endblock %}
+
+{% block usertools %}
+{% if user.is_authenticated %}
+Welcome,
+<strong>{% firstof user.get_short_name user.get_username %}</strong>.
+<a href="{% url 'logout' %}">Log out</a>
+{% endif %}
+{% endblock %}
 
 {% block breadcrumbs %}
 <div class="breadcrumbs">

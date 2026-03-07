@@ -21,7 +21,7 @@
         </table>
     </div>
 
-    {% if order.status != 'completed' and order.status != 'cancelled' %}
+    {% if order.status != 'completed' %}
     <form method="post" action="{% url 'technician:update_status' order.pk %}">
         {% csrf_token %}
         <fieldset class="module aligned">
@@ -29,7 +29,6 @@
             <div class="form-row">
                 <label for="id_status">Status:</label>
                 <select name="status" id="id_status">
-                    {% if order.status != 'in_progress' %}<option value="in_progress">In Progress</option>{% endif %}
                     <option value="completed">Completed</option>
                 </select>
             </div>

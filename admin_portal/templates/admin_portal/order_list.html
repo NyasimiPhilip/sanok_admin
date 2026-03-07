@@ -18,7 +18,6 @@
                         <option value="">All</option>
                         <option value="pending" {% if request.GET.status == 'pending' %}selected{% endif %}>Pending</option>
                         <option value="assigned" {% if request.GET.status == 'assigned' %}selected{% endif %}>Assigned</option>
-                        <option value="in_progress" {% if request.GET.status == 'in_progress' %}selected{% endif %}>In Progress</option>
                         <option value="completed" {% if request.GET.status == 'completed' %}selected{% endif %}>Completed</option>
                     </select>
                 </div>

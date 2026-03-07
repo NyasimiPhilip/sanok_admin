@@ -62,7 +62,7 @@ def update_status_view(request, pk):
 
     if request.method == 'POST':
         new_status = request.POST.get('status')
-        allowed = ['in_progress', 'completed']
+        allowed = ['completed']
         if new_status in allowed:
             order.status = new_status
             if new_status == 'completed':

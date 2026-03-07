@@ -202,9 +202,7 @@ class BookingAdmin(admin.ModelAdmin):
         colors = {
             'pending': '#ffc107',
             'assigned': '#17a2b8',
-            'in_progress': '#007bff',
             'completed': '#28a745',
-            'cancelled': '#dc3545',
         }
         color = colors.get(obj.status, '#6c757d')
         return format_html(
@@ -286,6 +284,6 @@ class BookingAdmin(admin.ModelAdmin):
 
 
 # Customize admin site headers
-admin.site.site_header = "Sanok Fumigation - Order Management System"
-admin.site.site_title = "Sanok Fumigation Admin"
-admin.site.index_title = "Welcome to Fumigation Order Management Dashboard"
+admin.site.site_header = "Sanok Order Management System"
+admin.site.site_title = "Sanok Order Management System"
+admin.site.index_title = "Sanok Order Management System"

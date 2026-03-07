@@ -91,9 +91,7 @@
             <select id="status" name="status">
                 <option value="pending" {% if not booking or booking.status == 'pending' %}selected{% endif %}>Pending</option>
                 <option value="assigned" {% if booking and booking.status == 'assigned' %}selected{% endif %}>Assigned</option>
-                <option value="in_progress" {% if booking and booking.status == 'in_progress' %}selected{% endif %}>In Progress</option>
                 <option value="completed" {% if booking and booking.status == 'completed' %}selected{% endif %}>Completed</option>
-                <option value="cancelled" {% if booking and booking.status == 'cancelled' %}selected{% endif %}>Cancelled</option>
             </select>
         </div>
         

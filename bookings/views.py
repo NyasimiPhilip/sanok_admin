@@ -90,7 +90,6 @@ def dashboard_view(request):
         'total_orders': bookings.count(),
         'pending_orders': bookings.filter(status='pending').count(),
         'assigned_orders': bookings.filter(status='assigned').count(),
-        'in_progress_orders': bookings.filter(status='in_progress').count(),
         'completed_orders': completed_bookings.count(),
         'orders_with_complaints': completed_bookings.filter(has_complaint=True).count(),
         'orders_no_complaints': completed_bookings.filter(has_complaint=False).count(),
@@ -331,11 +330,17 @@ def booking_status_update_view(request, pk):
     
     if request.method == 'POST':
         new_status = request.POST.get('status')
+        allowed_statuses = ['pending', 'assigned', 'completed']
+
+        if new_status not in allowed_statuses:
+            messages.error(request, 'Invalid order status')
+            return redirect('booking_detail', pk=pk)
+
         booking.status = new_status
-        
+
         if new_status == 'completed':
             booking.completed_at = timezone.now()
-        
+
         booking.save()
         messages.success(request, f'Order status updated to {booking.get_status_display()}')
     
@@ -451,7 +456,7 @@ def user_detail_view(request, pk):
         stats = {
             'total_orders': orders.count(),
             'completed_orders': completed_orders.count(),
-            'in_progress_orders': orders.filter(status='in_progress').count(),
+            'assigned_orders': orders.filter(status='assigned').count(),
             'orders_with_complaints': completed_orders.filter(has_complaint=True).count(),
             'orders_no_complaints': completed_orders.filter(has_complaint=False).count(),
         }

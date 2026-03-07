@@ -1,6 +1,10 @@
 ﻿{% extends "admin/base_site.html" %}
 
-{% block title %}Log in | Sanok Fumigation{% endblock %}
+{% block title %}Log in | Sanok Order Management System{% endblock %}
+
+{% block branding %}
+<h1 id="site-name"><a href="{% url 'login' %}">Sanok Order Management System</a></h1>
+{% endblock %}
 
 {% block bodyclass %}login{% endblock %}
 

@@ -154,7 +154,7 @@ class Command(BaseCommand):
             ]
 
             pest_types = ['rodents', 'cockroaches', 'termites', 'bed_bugs', 'ants', 'mosquitoes', 'flies', 'other']
-            statuses = ['pending', 'assigned', 'in_progress', 'completed']
+            statuses = ['pending', 'assigned', 'completed']
             
             for i in range(8):
                 country = countries[i % 4]

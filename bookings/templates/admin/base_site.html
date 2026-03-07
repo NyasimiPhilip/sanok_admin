@@ -1,63 +1,9 @@
-{% extends "admin/base_site.html" %}
+{% extends "admin/base.html" %}
 
-{% block title %}{% if subtitle %}{{ subtitle }} | {% endif %}{{ title }} | Sanok Fumigation{% endblock %}
+{% block title %}{% if subtitle %}{{ subtitle }} | {% endif %}{{ title }} | Sanok Order Management System{% endblock %}
 
 {% block branding %}
-<h1 id="site-name"><a href="{% url 'admin:index' %}">Sanok Fumigation Administration</a></h1>
-    
-    input[type="text"]:focus, input[type="password"]:focus, input[type="email"]:focus,
-    input[type="url"]:focus, input[type="number"]:focus, input[type="tel"]:focus,
-    textarea:focus, select:focus {
-        border-color: #93c1db !important;
-        box-shadow: 0 0 0 3px rgba(147, 193, 219, 0.15) !important;
-        outline: none !important;
-    }
-    
-    .submit-row {
-        background: white !important;
-        border-top: 1px solid #e0e0e0 !important;
-        padding: 1rem 1.5rem !important;
-    }
-    
-    .paginator {
-        color: #6c757d !important;
-    }
-    
-    .paginator a:link, .paginator a:visited {
-        background: white !important;
-        border: 1px solid #e0e0e0 !important;
-        color: #93c1db !important;
-        border-radius: 6px !important;
-        padding: 0.5rem 0.75rem !important;
-    }
-    
-    .paginator a:hover {
-        background: #f8f9fa !important;
-        border-color: #93c1db !important;
-    }
-    
-    #changelist-filter {
-        background: white !important;
-        border: 1px solid #e0e0e0 !important;
-        border-radius: 8px !important;
-    }
-    
-    #changelist-filter h2 {
-        background: #f8f9fa !important;
-        color: #2c3e50 !important;
-        padding: 0.75rem !important;
-        border-bottom: 1px solid #e0e0e0 !important;
-    }
-    
-    #changelist-filter h3 {
-        color: #6c757d !important;
-        font-weight: 600 !important;
-    }
-</style>
+<h1 id="site-name"><a href="{% url 'admin:index' %}">Sanok Order Management System</a></h1>
 {% endblock %}
 
-{% block footer %}
-<div id="footer" style="background: white; border-top: 1px solid #e0e0e0; padding: 1.5rem; text-align: center; color: #6c757d; font-size: 0.875rem;">
-    <p>Sanok Fumigation Management System &copy; {{ current_year }}</p>
-</div>
-{% endblock %}
+{% block nav-global %}{% endblock %}

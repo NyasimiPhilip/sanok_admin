@@ -198,16 +198,8 @@
             <button type="submit" class="btn btn-success">Mark as Assigned</button>
         </form>
         {% endif %}
-        
-        {% if booking.status in 'pending,assigned' %}
-        <form method="post" action="{% url 'booking_status_update' booking.pk %}" style="display: inline;">
-            {% csrf_token %}
-            <input type="hidden" name="status" value="in_progress">
-            <button type="submit" class="btn" style="background: #007bff; color: white;">Mark as In Progress</button>
-        </form>
-        {% endif %}
-        
-        {% if booking.status in 'assigned,in_progress' %}
+
+        {% if booking.status == 'assigned' %}
         <form method="post" action="{% url 'booking_status_update' booking.pk %}" style="display: inline;">
             {% csrf_token %}
             <input type="hidden" name="status" value="completed">
@@ -231,12 +223,6 @@
         {% endif %}
         
         {% if booking.assigned_technician == user and booking.status != 'completed' %}
-        <form method="post" action="{% url 'booking_status_update' booking.pk %}" style="display: inline;">
-            {% csrf_token %}
-            <input type="hidden" name="status" value="in_progress">
-            <button type="submit" class="btn btn-primary">Start Work</button>
-        </form>
-        
         <form method="post" action="{% url 'booking_status_update' booking.pk %}" style="display: inline;">
             {% csrf_token %}
             <input type="hidden" name="status" value="completed">
