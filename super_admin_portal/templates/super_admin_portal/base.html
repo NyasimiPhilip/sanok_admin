@@ -10,6 +10,7 @@
 {% if user.is_authenticated %}
 Welcome,
 <strong>{% firstof user.get_short_name user.get_username %}</strong>.
+<a href="{% url 'admin:index' %}">Admin site</a>
 <a href="{% url 'logout' %}">Log out</a>
 {% endif %}
 {% endblock %}
@@ -22,12 +23,5 @@ Welcome,
 {% endblock %}
 
 {% block content %}
-{% if messages %}
-<ul class="messagelist">
-    {% for message in messages %}
-    <li{% if message.tags %} class="{{ message.tags }}"{% endif %}>{{ message }}</li>
-    {% endfor %}
-</ul>
-{% endif %}
 {% block portal_content %}{% endblock %}
 {% endblock %}

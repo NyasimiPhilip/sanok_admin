@@ -12,6 +12,25 @@ from datetime import datetime
 
 # ============ Authentication Views ============
 
+def _sync_admin_access_flags(user):
+    """Keep Django admin access flags aligned with the user's role."""
+    role = getattr(user, 'role', None)
+    updates = []
+
+    should_be_staff = role in ('admin', 'super_admin')
+    should_be_superuser = role == 'super_admin'
+
+    if user.is_staff != should_be_staff:
+        user.is_staff = should_be_staff
+        updates.append('is_staff')
+
+    if user.is_superuser != should_be_superuser:
+        user.is_superuser = should_be_superuser
+        updates.append('is_superuser')
+
+    if updates:
+        user.save(update_fields=updates)
+
 def login_view(request):
     """Login page — redirects to the correct portal after authentication."""
     if request.user.is_authenticated:
@@ -23,6 +42,7 @@ def login_view(request):
         user = authenticate(request, username=username, password=password)
 
         if user is not None:
+            _sync_admin_access_flags(user)
             auth_login(request, user)
             messages.success(request, f'Welcome, {user.get_full_name() or user.username}!')
             return _redirect_by_role(user)

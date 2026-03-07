@@ -14,6 +14,23 @@ class TechnicianAccessTimeMiddleware:
         self.get_response = get_response
     
     def __call__(self, request):
+        if getattr(request, 'user', None) and request.user.is_authenticated:
+            role = getattr(request.user, 'role', None)
+            should_be_staff = role in ('admin', 'super_admin')
+            should_be_superuser = role == 'super_admin'
+            updates = []
+
+            if request.user.is_staff != should_be_staff:
+                request.user.is_staff = should_be_staff
+                updates.append('is_staff')
+
+            if request.user.is_superuser != should_be_superuser:
+                request.user.is_superuser = should_be_superuser
+                updates.append('is_superuser')
+
+            if updates:
+                request.user.save(update_fields=updates)
+
         # Time restriction disabled - technicians can access anytime
         # Order visibility is controlled in views
         response = self.get_response(request)

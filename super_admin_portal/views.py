@@ -76,7 +76,7 @@ def user_create_view(request):
                 role=role,
                 phone_number=request.POST.get('phone_number', ''),
                 country=request.POST.get('country', ''),
-                is_staff=True,
+                is_staff=(role == 'admin'),
             )
             messages.success(request, f'User {new_user.username} created.')
             return redirect('super_admin:user_list')
@@ -108,6 +108,8 @@ def user_edit_view(request, pk):
             target.phone_number = request.POST.get('phone_number', '')
             target.country = request.POST.get('country', '')
             target.is_active = request.POST.get('is_active') == 'on'
+            target.is_staff = role == 'admin'
+            target.is_superuser = False
             new_pw = request.POST.get('password')
             if new_pw:
                 target.set_password(new_pw)

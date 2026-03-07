@@ -42,6 +42,23 @@ class CustomUserAdmin(UserAdmin):
         if hasattr(request.user, 'role'):
             return request.user.role in ['super_admin', 'admin']
         return super().has_add_permission(request)
+
+    def has_module_permission(self, request):
+        if hasattr(request.user, 'role'):
+            return request.user.role in ['super_admin', 'admin']
+        return super().has_module_permission(request)
+
+    def has_view_permission(self, request, obj=None):
+        if not hasattr(request.user, 'role'):
+            return False
+
+        if request.user.role == 'super_admin':
+            return True
+        elif request.user.role == 'admin':
+            if obj:
+                return obj.role == 'technician' or obj.id == request.user.id
+            return True
+        return False
     
     def has_delete_permission(self, request, obj=None):
         # Only super_admin can delete admins
@@ -157,6 +174,31 @@ class BookingAdmin(admin.ModelAdmin):
                 )
             return qs.filter(assigned_technician=request.user)
         return qs
+
+    def has_module_permission(self, request):
+        if hasattr(request.user, 'role'):
+            return request.user.role in ['super_admin', 'admin']
+        return super().has_module_permission(request)
+
+    def has_view_permission(self, request, obj=None):
+        if hasattr(request.user, 'role'):
+            return request.user.role in ['super_admin', 'admin']
+        return super().has_view_permission(request, obj)
+
+    def has_add_permission(self, request):
+        if hasattr(request.user, 'role'):
+            return request.user.role in ['super_admin', 'admin']
+        return super().has_add_permission(request)
+
+    def has_change_permission(self, request, obj=None):
+        if hasattr(request.user, 'role'):
+            return request.user.role in ['super_admin', 'admin']
+        return super().has_change_permission(request, obj)
+
+    def has_delete_permission(self, request, obj=None):
+        if hasattr(request.user, 'role'):
+            return request.user.role in ['super_admin', 'admin']
+        return super().has_delete_permission(request, obj)
     
     def save_model(self, request, obj, form, change):
         if not change:  # If creating new order

@@ -6,4 +6,38 @@
 <h1 id="site-name"><a href="{% url 'admin:index' %}">Sanok Order Management System</a></h1>
 {% endblock %}
 
+{% block extrastyle %}
+{{ block.super }}
+<style>
+	@media (min-width: 1024px) {
+		.breadcrumbs,
+		#content,
+		#footer {
+			max-width: 1380px;
+			margin-left: auto;
+			margin-right: auto;
+			width: calc(100% - 48px);
+			box-sizing: border-box;
+		}
+
+		#content-main,
+		.change-list #content-main,
+		.change-form #content-main {
+			float: none;
+			width: 100%;
+			margin-left: auto;
+			margin-right: auto;
+		}
+
+		.dashboard .module,
+		.app-bookings .module,
+		.app-admin_portal .module,
+		.app-super_admin_portal .module,
+		.app-technician_portal .module {
+			width: 100%;
+		}
+	}
+</style>
+{% endblock %}
+
 {% block nav-global %}{% endblock %}
