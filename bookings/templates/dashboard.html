@@ -37,21 +37,57 @@
 {% endif %}
 
 <!-- Statistics Cards -->
-<div class="stats-grid">
-    <div class="stat-card" style="background: white; border: 1px solid #e0e0e0; border-left: 4px solid #4caf50;">
-        <h3 style="color: #6c757d; font-size: 0.875rem; font-weight: 500;">Completed Orders</h3>
-        <div class="value" style="color: #2c3e50;">{{ stats.completed_orders }}</div>
+<div class="card" style="background: white; border: 1px solid #e0e0e0; border-radius: 8px;">
+    <h2 style="margin-bottom: 1.5rem; color: #2c3e50; font-size: 1.25rem; font-weight: 600; border-bottom: 2px solid #f0f0f0; padding-bottom: 1rem;">Order Statistics</h2>
+    
+    <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 2rem;">
+        <!-- Completed Orders -->
+        <div style="text-align: center;">
+            <div style="font-size: 3rem; font-weight: 600; color: #2c3e50; margin-bottom: 0.5rem;">{{ stats.completed_orders }}</div>
+            <div style="color: #6c757d; font-size: 0.875rem; text-transform: uppercase; letter-spacing: 0.5px;">Completed Orders</div>
+        </div>
+        
+        <!-- No Complaints -->
+        <div style="text-align: center; padding: 1rem; background: #f1f8f4; border-radius: 8px; border: 1px solid #c3e6cb;">
+            <div style="display: flex; align-items: center; justify-content: center; gap: 0.5rem; margin-bottom: 0.5rem;">
+                <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#28a745" stroke-width="3" stroke-linecap="round" stroke-linejoin="round">
+                    <polyline points="20 6 9 17 4 12"></polyline>
+                </svg>
+                <span style="font-size: 2.5rem; font-weight: 600; color: #28a745;">{{ stats.orders_no_complaints }}</span>
+            </div>
+            <div style="color: #155724; font-size: 0.875rem; font-weight: 500;">No Complaints</div>
+        </div>
+        
+        <!-- With Complaints -->
+        <div style="text-align: center; padding: 1rem; background: #fef5f5; border-radius: 8px; border: 1px solid #f5c6cb;">
+            <div style="display: flex; align-items: center; justify-content: center; gap: 0.5rem; margin-bottom: 0.5rem;">
+                <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#dc3545" stroke-width="3" stroke-linecap="round" stroke-linejoin="round">
+                    <circle cx="12" cy="12" r="10"></circle>
+                    <line x1="15" y1="9" x2="9" y2="15"></line>
+                    <line x1="9" y1="9" x2="15" y2="15"></line>
+                </svg>
+                <span style="font-size: 2.5rem; font-weight: 600; color: #dc3545;">{{ stats.orders_with_complaints }}</span>
+            </div>
+            <div style="color: #721c24; font-size: 0.875rem; font-weight: 500;">With Complaints</div>
+        </div>
     </div>
     
-    <div class="stat-card" style="background: white; border: 1px solid #e0e0e0; border-left: 4px solid #f44336;">
-        <h3 style="color: #6c757d; font-size: 0.875rem; font-weight: 500;">With Complaints</h3>
-        <div class="value" style="color: #2c3e50;">{{ stats.orders_with_complaints }}</div>
+    <!-- Completion Rate Bar -->
+    {% if stats.completed_orders > 0 %}
+    <div style="margin-top: 2rem; padding-top: 1.5rem; border-top: 1px solid #e0e0e0;">
+        <div style="display: flex; justify-content: space-between; margin-bottom: 0.5rem;">
+            <span style="font-size: 0.875rem; color: #6c757d; font-weight: 500;">Service Quality Rate</span>
+            <span style="font-size: 0.875rem; color: #2c3e50; font-weight: 600;">
+                {% widthratio stats.orders_no_complaints stats.completed_orders 100 %}% Success
+            </span>
+        </div>
+        <progress
+            value="{{ stats.orders_no_complaints }}"
+            max="{{ stats.completed_orders }}"
+            style="width: 100%; height: 10px;"
+        ></progress>
     </div>
-    
-    <div class="stat-card" style="background: white; border: 1px solid #e0e0e0; border-left: 4px solid #93c1db;">
-        <h3 style="color: #6c757d; font-size: 0.875rem; font-weight: 500;">No Complaints</h3>
-        <div class="value" style="color: #2c3e50;">{{ stats.orders_no_complaints }}</div>
-    </div>
+    {% endif %}
 </div>
 
 <!-- Orders by Country -->
