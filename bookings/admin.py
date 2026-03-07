@@ -1,7 +1,7 @@
 from django.contrib import admin
 from django.contrib.auth.admin import UserAdmin
 from django.utils.html import format_html
-from django.db.models import Count, Sum, Q
+from django.db.models import Count, Q
 from django.utils import timezone
 from .models import CustomUser, Booking
 
@@ -257,15 +257,12 @@ class BookingAdmin(admin.ModelAdmin):
         total_orders = qs.count()
         pending_orders = qs.filter(status='pending').count()
         assigned_orders = qs.filter(status='assigned').count()
-        in_progress_orders = qs.filter(status='in_progress').count()
         completed_orders = qs.filter(status='completed').count()
         
         # Complaint tracking
         completed_qs = qs.filter(status='completed')
         orders_with_complaints = completed_qs.filter(has_complaint=True).count()
         orders_no_complaints = completed_qs.filter(has_complaint=False).count()
-        
-        total_revenue = completed_qs.aggregate(Sum('amount'))['amount__sum'] or 0
         
         # Today's orders
         today = timezone.now().date()
@@ -278,12 +275,10 @@ class BookingAdmin(admin.ModelAdmin):
             'total_orders': total_orders,
             'pending_orders': pending_orders,
             'assigned_orders': assigned_orders,
-            'in_progress_orders': in_progress_orders,
             'completed_orders': completed_orders,
             'orders_with_complaints': orders_with_complaints,
             'orders_no_complaints': orders_no_complaints,
             'today_orders': today_orders,
-            'total_revenue': total_revenue,
             'country_stats': country_stats,
         }
         
